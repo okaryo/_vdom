@@ -1,12 +1,21 @@
 import type { VNode } from "./vnode";
 
 export function mount(vnode: VNode, container: Node): Node {
-  const node =
-    vnode.type === "element"
-      ? document.createElement(vnode.tagName)
-      : document.createTextNode(vnode.value);
+  if (vnode.type === "text") {
+    const node = document.createTextNode(vnode.value);
 
-  container.appendChild(node);
+    container.appendChild(node);
 
-  return node;
+    return node;
+  }
+
+  const element = document.createElement(vnode.tagName);
+
+  for (const child of vnode.children) {
+    mount(child, element);
+  }
+
+  container.appendChild(element);
+
+  return element;
 }

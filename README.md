@@ -136,6 +136,12 @@ import { mount, type ElementVNode } from "./src";
 const vnode: ElementVNode = {
   type: "element",
   tagName: "section",
+  children: [
+    {
+      type: "text",
+      value: "Virtual DOM",
+    },
+  ],
 };
 
 mount(vnode, document.querySelector("#app")!);
@@ -143,8 +149,8 @@ mount(vnode, document.querySelector("#app")!);
 
 Creating a Virtual Node has no DOM side effects. `mount` converts that plain
 description into a real browser element or text node and appends it to the
-container. Properties, children, and reconciliation are intentionally not
-supported yet.
+container. Element children are mounted recursively. Properties and
+reconciliation are intentionally not supported yet.
 
 ## Project Documents
 
@@ -156,3 +162,5 @@ supported yet.
   Virtual-Node-to-DOM lifecycle.
 - `docs/text-node-mount.md`: notes on text nodes and discriminated Virtual Node
   types.
+- `docs/nested-children.md`: notes on explicit child arrays and recursive
+  mounting.

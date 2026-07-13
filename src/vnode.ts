@@ -1,6 +1,7 @@
 export type ElementVNode = {
   type: "element";
   tagName: string;
+  children: VNode[];
 };
 
 export type TextVNode = {

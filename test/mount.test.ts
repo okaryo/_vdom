@@ -7,6 +7,7 @@ describe("mount", () => {
     const vnode: ElementVNode = {
       type: "element",
       tagName: "section",
+      children: [],
     };
     const container = document.createElement("div");
 
@@ -29,5 +30,38 @@ describe("mount", () => {
     expect(container.textContent).toBe("Virtual DOM");
     expect(node.nodeType).toBe(Node.TEXT_NODE);
     expect(container.firstChild).toBe(node);
+  });
+
+  it("recursively mounts element and text children", () => {
+    const vnode: ElementVNode = {
+      type: "element",
+      tagName: "article",
+      children: [
+        {
+          type: "element",
+          tagName: "h1",
+          children: [
+            {
+              type: "text",
+              value: "Virtual DOM",
+            },
+          ],
+        },
+        {
+          type: "text",
+          value: " is a tree.",
+        },
+      ],
+    };
+    const container = document.createElement("div");
+
+    const node = mount(vnode, container);
+
+    expect(container.innerHTML).toBe(
+      "<article><h1>Virtual DOM</h1> is a tree.</article>",
+    );
+    expect(container.firstChild).toBe(node);
+    expect(node.firstChild?.nodeName).toBe("H1");
+    expect(node.firstChild?.firstChild?.nodeType).toBe(Node.TEXT_NODE);
   });
 });

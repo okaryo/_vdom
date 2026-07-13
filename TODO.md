@@ -62,7 +62,8 @@ First implementation milestone:
 ### 1. Virtual Node Representation
 
 - [x] Define element and text Virtual Node types.
-- [ ] Decide how properties and children are represented.
+- [x] Represent element children as an explicit `VNode[]`.
+- [ ] Decide how element properties are represented.
 - [ ] Add a minimal `h` function.
 - [ ] Normalize primitive text children.
 - [ ] Decide behavior for `null`, `undefined`, boolean, and nested array children.
@@ -80,7 +81,7 @@ Questions to answer:
 
 - [x] Convert an element Virtual Node into a browser DOM element.
 - [x] Create and append text nodes.
-- [ ] Mount nested children recursively.
+- [x] Mount nested children recursively.
 - [ ] Apply basic properties or attributes.
 - [ ] Attach an event listener.
 - [x] Add tests or examples that expose the current element-only mount
@@ -96,6 +97,10 @@ Completed learning unit:
   a node with an independent lifecycle.
 - The `type` discriminator lets the renderer and TypeScript distinguish which
   fields and browser creation operation belong to each node kind.
+- Required child arrays keep the renderer input canonical and make recursive
+  mounting independent from future child normalization convenience.
+- Mounting follows the recursive Virtual Node structure and preserves child
+  array order in the resulting browser DOM.
 
 Questions to answer:
 
