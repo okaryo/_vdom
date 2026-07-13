@@ -61,12 +61,13 @@ First implementation milestone:
 
 ### 1. Virtual Node Representation
 
-- [ ] Define element and text Virtual Node types.
+- [x] Define element and text Virtual Node types.
 - [ ] Decide how properties and children are represented.
 - [ ] Add a minimal `h` function.
 - [ ] Normalize primitive text children.
 - [ ] Decide behavior for `null`, `undefined`, boolean, and nested array children.
-- [ ] Add focused type and behavior tests.
+- [x] Add focused type and behavior tests for the explicit element and text node
+  kinds.
 
 Questions to answer:
 
@@ -78,7 +79,7 @@ Questions to answer:
 ### 2. Initial DOM Mounting
 
 - [x] Convert an element Virtual Node into a browser DOM element.
-- [ ] Create and append text nodes.
+- [x] Create and append text nodes.
 - [ ] Mount nested children recursively.
 - [ ] Apply basic properties or attributes.
 - [ ] Attach an event listener.
@@ -91,6 +92,10 @@ Completed learning unit:
 - `mount` is the explicit boundary that creates and appends a browser element.
 - The created DOM element is returned so tests can observe node identity without
   storing renderer state on the Virtual Node yet.
+- Text has its own Virtual Node because the browser DOM also represents text as
+  a node with an independent lifecycle.
+- The `type` discriminator lets the renderer and TypeScript distinguish which
+  fields and browser creation operation belong to each node kind.
 
 Questions to answer:
 

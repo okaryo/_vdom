@@ -1,9 +1,12 @@
-import type { ElementVNode } from "./vnode";
+import type { VNode } from "./vnode";
 
-export function mount(vnode: ElementVNode, container: Node): Element {
-  const element = document.createElement(vnode.tagName);
+export function mount(vnode: VNode, container: Node): Node {
+  const node =
+    vnode.type === "element"
+      ? document.createElement(vnode.tagName)
+      : document.createTextNode(vnode.value);
 
-  container.appendChild(element);
+  container.appendChild(node);
 
-  return element;
+  return node;
 }
