@@ -7,6 +7,7 @@ describe("mount", () => {
     const vnode: ElementVNode = {
       type: "element",
       tagName: "section",
+      props: {},
       children: [],
     };
     const container = document.createElement("div");
@@ -32,14 +33,37 @@ describe("mount", () => {
     expect(container.firstChild).toBe(node);
   });
 
+  it("applies string props as HTML attributes", () => {
+    const vnode: ElementVNode = {
+      type: "element",
+      tagName: "section",
+      props: {
+        id: "introduction",
+        class: "lesson",
+        "data-topic": "virtual-dom",
+      },
+      children: [],
+    };
+    const container = document.createElement("div");
+
+    mount(vnode, container);
+
+    const element = container.firstElementChild;
+    expect(element?.getAttribute("id")).toBe("introduction");
+    expect(element?.getAttribute("class")).toBe("lesson");
+    expect(element?.getAttribute("data-topic")).toBe("virtual-dom");
+  });
+
   it("recursively mounts element and text children", () => {
     const vnode: ElementVNode = {
       type: "element",
       tagName: "article",
+      props: {},
       children: [
         {
           type: "element",
           tagName: "h1",
+          props: {},
           children: [
             {
               type: "text",

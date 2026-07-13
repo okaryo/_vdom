@@ -11,6 +11,10 @@ export function mount(vnode: VNode, container: Node): Node {
 
   const element = document.createElement(vnode.tagName);
 
+  for (const [name, value] of Object.entries(vnode.props)) {
+    element.setAttribute(name, value);
+  }
+
   for (const child of vnode.children) {
     mount(child, element);
   }

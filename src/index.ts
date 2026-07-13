@@ -1,2 +1,2 @@
 export { mount } from "./mount";
-export type { ElementVNode, TextVNode, VNode } from "./vnode";
+export type { ElementProps, ElementVNode, TextVNode, VNode } from "./vnode";

@@ -1,6 +1,9 @@
+export type ElementProps = Record<string, string>;
+
 export type ElementVNode = {
   type: "element";
   tagName: string;
+  props: ElementProps;
   children: VNode[];
 };
 

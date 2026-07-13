@@ -6,6 +6,7 @@ An element Virtual Node now contains an explicit array of child Virtual Nodes:
 const vnode: ElementVNode = {
   type: "element",
   tagName: "article",
+  props: {},
   children: [
     {
       type: "text",

@@ -63,7 +63,7 @@ First implementation milestone:
 
 - [x] Define element and text Virtual Node types.
 - [x] Represent element children as an explicit `VNode[]`.
-- [ ] Decide how element properties are represented.
+- [x] Start element props as an explicit `Record<string, string>`.
 - [ ] Add a minimal `h` function.
 - [ ] Normalize primitive text children.
 - [ ] Decide behavior for `null`, `undefined`, boolean, and nested array children.
@@ -82,7 +82,7 @@ Questions to answer:
 - [x] Convert an element Virtual Node into a browser DOM element.
 - [x] Create and append text nodes.
 - [x] Mount nested children recursively.
-- [ ] Apply basic properties or attributes.
+- [x] Apply string-valued props as basic HTML attributes.
 - [ ] Attach an event listener.
 - [x] Add tests or examples that expose the current element-only mount
   lifecycle.
@@ -101,6 +101,9 @@ Completed learning unit:
   mounting independent from future child normalization convenience.
 - Mounting follows the recursive Virtual Node structure and preserves child
   array order in the resulting browser DOM.
+- VNode props are renderer inputs; the initial renderer rule maps every string
+  prop to `setAttribute` without claiming that attributes and DOM properties
+  are interchangeable.
 
 Questions to answer:
 
@@ -130,7 +133,7 @@ Questions to answer:
 ### 4. Properties, Styles, And Events
 
 - [ ] Add, update, and remove common DOM properties.
-- [ ] Define simplified attribute fallback behavior.
+- [x] Define the initial attribute rule: string props use `setAttribute`.
 - [ ] Update class and style values.
 - [ ] Replace and remove event listeners without accumulating handlers.
 - [ ] Cover controlled form properties such as `value` if useful.

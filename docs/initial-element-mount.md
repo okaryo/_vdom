@@ -6,6 +6,7 @@ The first renderer step deliberately supports only one element Virtual Node:
 const vnode: ElementVNode = {
   type: "element",
   tagName: "section",
+  props: {},
   children: [],
 };
 
@@ -38,7 +39,8 @@ reconciliation is introduced.
 
 ## Current Limitations
 
-The renderer cannot yet represent properties or events. It also mounts every
-call as a new DOM node and performs no comparison with previously rendered
-output. Text node support is described in `text-node-mount.md`, and recursive
-element children are described in `nested-children.md`.
+The renderer supports string-valued props as HTML attributes, but not DOM
+property or event behavior. It also mounts every call as a new DOM node and
+performs no comparison with previously rendered output. Text node support is
+described in `text-node-mount.md`, and recursive element children are described
+in `nested-children.md`.
