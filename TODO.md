@@ -65,7 +65,7 @@ First implementation milestone:
 - [x] Represent element children as an explicit `VNode[]`.
 - [x] Start element props as an explicit `Record<string, string>`.
 - [x] Add a minimal `h` function.
-- [ ] Normalize primitive text children.
+- [x] Normalize primitive text children.
 - [ ] Decide behavior for `null`, `undefined`, boolean, and nested array children.
 - [x] Add focused type and behavior tests for the explicit element and text node
   kinds.
@@ -104,10 +104,12 @@ Completed learning unit:
 - VNode props are renderer inputs; the initial renderer rule maps every string
   prop to `setAttribute` without claiming that attributes and DOM properties
   are interchangeable.
-- `h` is a pure Virtual Node creation boundary: it packages an element tag,
-  props, and already-canonical `VNode[]` children without touching the DOM.
-- The first `h` signature stays explicit so primitive and empty-child
-  normalization can be introduced and observed as a separate learning unit.
+- `h` is a pure Virtual Node creation boundary: it constructs an element
+  description without touching the DOM.
+- `h` accepts string and number children as creation-time conveniences and
+  normalizes them into `TextVNode` objects before the renderer sees the tree.
+- Existing Virtual Nodes pass through normalization unchanged, while unsupported
+  empty values and nested arrays remain excluded from `VNodeChild` for now.
 
 Questions to answer:
 

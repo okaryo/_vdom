@@ -132,31 +132,27 @@ The current implementation can create element Virtual Nodes with a minimal `h`
 function and mount element and text Virtual Nodes:
 
 ```ts
-import { h, mount, type TextVNode } from "./src";
-
-const title: TextVNode = {
-  type: "text",
-  value: "Virtual DOM",
-};
+import { h, mount } from "./src";
 
 const vnode = h(
   "section",
   {
     id: "introduction",
   },
-  [title],
+  ["Virtual DOM lesson ", 1],
 );
 
 mount(vnode, document.querySelector("#app")!);
 ```
 
-`h` only creates a plain element description and has no DOM side effects. Its
-current inputs remain explicit: props are string-valued and children must
-already be `VNode[]`. `mount` converts a Virtual Node into a real browser
-element or text node and appends it to the container. Element children are
-mounted recursively, and string props are applied as HTML attributes. Primitive
-child normalization, DOM property behavior, events, and reconciliation are
-intentionally not supported yet.
+`h` only creates a plain element description and has no DOM side effects. It
+normalizes string and number children into `TextVNode` objects, so `mount`
+continues to receive a canonical `VNode[]`. Props remain string-valued, and
+empty values and nested child arrays are not supported yet. `mount` converts a
+Virtual Node into a real browser element or text node and appends it to the
+container. Element children are mounted recursively, and string props are
+applied as HTML attributes. DOM property behavior, events, and reconciliation
+are intentionally not supported yet.
 
 ## Project Documents
 

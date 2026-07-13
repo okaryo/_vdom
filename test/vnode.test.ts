@@ -26,4 +26,20 @@ describe("h", () => {
     });
     expect(createElement).not.toHaveBeenCalled();
   });
+
+  it("normalizes string and number children into text Virtual Nodes", () => {
+    const child: TextVNode = {
+      type: "text",
+      value: "existing",
+    };
+
+    const vnode = h("p", {}, ["count: ", 2, child]);
+
+    expect(vnode.children).toEqual([
+      { type: "text", value: "count: " },
+      { type: "text", value: "2" },
+      child,
+    ]);
+    expect(vnode.children[2]).toBe(child);
+  });
 });

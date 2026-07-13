@@ -23,11 +23,11 @@ const vnode: ElementVNode = {
 is being studied: every child is already a valid element or text Virtual Node,
 and the renderer does not perform input normalization yet.
 
-The first `h` function preserves this explicit representation. A later learning
-unit can make it more convenient by accepting strings, empty values, or nested
-arrays and converting them into this canonical tree. That convenience belongs
-at the Virtual Node creation boundary rather than in the DOM mounting
-algorithm.
+The `h` function preserves this canonical representation in its output while
+accepting strings and numbers as convenient inputs. It converts those values to
+text Virtual Nodes before mounting. A later learning unit can decide how empty
+values and nested arrays should be handled. That convenience belongs at the
+Virtual Node creation boundary rather than in the DOM mounting algorithm.
 
 ## Recursive Mounting
 
