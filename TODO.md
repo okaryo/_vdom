@@ -40,9 +40,17 @@ Roadmap sections are learning themes, not single work units.
 - [x] Decide that the first core target is a Virtual DOM renderer rather than a
   broad React clone.
 - [x] Create initial project documentation.
-- [ ] Select the minimal TypeScript build and test tooling.
+- [x] Select the minimal TypeScript build and test tooling.
 - [ ] Create the initial package layout after the first implementation unit is
   confirmed.
+
+Tooling decision:
+
+- Use the TypeScript compiler for strict static checking without emitting build
+  output yet.
+- Use Vitest as the test runner and jsdom as the browser DOM test environment.
+- Defer a bundler and browser demo tooling until an executable example creates a
+  concrete need for them.
 
 First implementation milestone:
 

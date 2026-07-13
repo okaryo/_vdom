@@ -105,9 +105,26 @@ The detailed learning-project operating pattern is documented in
 - Language: TypeScript
 - Package manager: pnpm
 - Runtime target: browser DOM
+- Type checking: TypeScript compiler
+- Test runner: Vitest
+- DOM test environment: jsdom
 
-The concrete build and test tools will be selected when the first implementation
-milestone requires them.
+The project intentionally starts without a bundler or UI framework. TypeScript
+performs static checking, while Vitest and jsdom make DOM behavior and node
+identity observable in focused tests.
+
+Install dependencies:
+
+```sh
+pnpm install
+```
+
+Run type checks and tests:
+
+```sh
+pnpm typecheck
+pnpm test
+```
 
 ## Project Documents
 
