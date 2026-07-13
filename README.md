@@ -147,12 +147,13 @@ mount(vnode, document.querySelector("#app")!);
 
 `h` only creates a plain element description and has no DOM side effects. It
 normalizes string and number children into `TextVNode` objects, so `mount`
-continues to receive a canonical `VNode[]`. Props remain string-valued, and
-empty values and nested child arrays are not supported yet. `mount` converts a
-Virtual Node into a real browser element or text node and appends it to the
-container. Element children are mounted recursively, and string props are
-applied as HTML attributes. DOM property behavior, events, and reconciliation
-are intentionally not supported yet.
+continues to receive a canonical `VNode[]`. Nested child arrays are recursively
+flattened, while `null`, `undefined`, and boolean children are omitted. Props
+remain string-valued. `mount` converts a Virtual Node into a real browser
+element or text node and appends it to the container. Element children are
+mounted recursively, and string props are applied as HTML attributes. DOM
+property behavior, events, and reconciliation are intentionally not supported
+yet.
 
 ## Project Documents
 

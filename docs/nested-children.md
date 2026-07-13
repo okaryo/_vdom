@@ -25,9 +25,11 @@ and the renderer does not perform input normalization yet.
 
 The `h` function preserves this canonical representation in its output while
 accepting strings and numbers as convenient inputs. It converts those values to
-text Virtual Nodes before mounting. A later learning unit can decide how empty
-values and nested arrays should be handled. That convenience belongs at the
-Virtual Node creation boundary rather than in the DOM mounting algorithm.
+text Virtual Nodes before mounting, recursively flattens nested arrays, and
+omits `null`, `undefined`, and boolean values. No placeholder VNode is created
+for an omitted child, so child positions refer to the normalized output array.
+This convenience belongs at the Virtual Node creation boundary rather than in
+the DOM mounting algorithm.
 
 ## Recursive Mounting
 

@@ -15,8 +15,8 @@ or mount anything. This keeps two boundaries visible:
 
 ## Child Normalization Boundary
 
-The current signature accepts existing Virtual Nodes plus string and number
-children:
+The current signature accepts existing Virtual Nodes, primitive child values,
+empty values, and nested child arrays:
 
 ```ts
 function h(
@@ -32,7 +32,17 @@ element Virtual Node. Existing Virtual Nodes pass through unchanged. Therefore,
 the renderer does not need branches for convenient child input types.
 
 Numbers are converted with `String(child)` because DOM text nodes store text,
-not numeric values. Booleans are intentionally not treated as text, matching
-the roadmap decision to consider boolean and empty-child behavior separately.
-There are still no default props, variadic children, nested arrays, or
-`null`/`undefined` children.
+not numeric values.
+
+`null`, `undefined`, and both boolean values are omitted. They create neither a
+Virtual Node nor a placeholder DOM node. Treating booleans as empty makes a
+conditional child such as `isVisible && vnode` convenient without rendering the
+text `"false"`; treating `true` the same way keeps boolean behavior consistent.
+
+Nested arrays are recursively flattened while preserving order. This supports
+children produced by mapping or grouping without making `mount` understand
+arrays. Because empty values disappear, positions in `ElementVNode.children`
+are positions after normalization. That becomes important when children are
+later reconciled by position.
+
+There are still no default props or variadic children.

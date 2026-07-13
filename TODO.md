@@ -66,7 +66,7 @@ First implementation milestone:
 - [x] Start element props as an explicit `Record<string, string>`.
 - [x] Add a minimal `h` function.
 - [x] Normalize primitive text children.
-- [ ] Decide behavior for `null`, `undefined`, boolean, and nested array children.
+- [x] Decide behavior for `null`, `undefined`, boolean, and nested array children.
 - [x] Add focused type and behavior tests for the explicit element and text node
   kinds.
 
@@ -108,8 +108,11 @@ Completed learning unit:
   description without touching the DOM.
 - `h` accepts string and number children as creation-time conveniences and
   normalizes them into `TextVNode` objects before the renderer sees the tree.
-- Existing Virtual Nodes pass through normalization unchanged, while unsupported
-  empty values and nested arrays remain excluded from `VNodeChild` for now.
+- Existing Virtual Nodes pass through normalization unchanged.
+- `null`, `undefined`, and boolean children are omitted without creating a
+  placeholder VNode; nested child arrays are recursively flattened in order.
+- Child positions are therefore defined by the normalized `VNode[]`, a choice
+  that will matter when positional reconciliation is introduced.
 
 Questions to answer:
 

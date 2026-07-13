@@ -42,4 +42,26 @@ describe("h", () => {
     ]);
     expect(vnode.children[2]).toBe(child);
   });
+
+  it("omits null, undefined, and boolean children", () => {
+    const vnode = h("div", {}, [null, undefined, false, true]);
+
+    expect(vnode.children).toEqual([]);
+  });
+
+  it("recursively flattens nested child arrays in order", () => {
+    const child: TextVNode = {
+      type: "text",
+      value: "existing",
+    };
+
+    const vnode = h("p", {}, [["first", [2, null]], false, [child]]);
+
+    expect(vnode.children).toEqual([
+      { type: "text", value: "first" },
+      { type: "text", value: "2" },
+      child,
+    ]);
+    expect(vnode.children[2]).toBe(child);
+  });
 });

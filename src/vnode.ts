@@ -14,17 +14,44 @@ export type TextVNode = {
 
 export type VNode = ElementVNode | TextVNode;
 
-export type VNodeChild = VNode | string | number;
+export type VNodeChild =
+  | VNode
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | VNodeChild[];
 
-function normalizeChild(child: VNodeChild): VNode {
-  if (typeof child === "string" || typeof child === "number") {
-    return {
-      type: "text",
-      value: String(child),
-    };
+function normalizeChildren(children: VNodeChild[]): VNode[] {
+  const normalizedChildren: VNode[] = [];
+
+  for (const child of children) {
+    if (Array.isArray(child)) {
+      normalizedChildren.push(...normalizeChildren(child));
+      continue;
+    }
+
+    if (
+      child === null ||
+      child === undefined ||
+      typeof child === "boolean"
+    ) {
+      continue;
+    }
+
+    if (typeof child === "string" || typeof child === "number") {
+      normalizedChildren.push({
+        type: "text",
+        value: String(child),
+      });
+      continue;
+    }
+
+    normalizedChildren.push(child);
   }
 
-  return child;
+  return normalizedChildren;
 }
 
 export function h(
@@ -36,6 +63,6 @@ export function h(
     type: "element",
     tagName,
     props,
-    children: children.map(normalizeChild),
+    children: normalizeChildren(children),
   };
 }
