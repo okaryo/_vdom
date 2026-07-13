@@ -39,8 +39,9 @@ reconciliation is introduced.
 
 ## Current Limitations
 
-The renderer supports string-valued props as HTML attributes, but not DOM
-property or event behavior. It also mounts every call as a new DOM node and
-performs no comparison with previously rendered output. Text node support is
-described in `text-node-mount.md`, and recursive element children are described
-in `nested-children.md`.
+The renderer supports string-valued props as HTML attributes and function props
+as event listeners, but not general DOM property behavior. It also mounts every
+call as a new DOM node and performs no comparison with previously rendered
+output, so listeners cannot yet be replaced or removed during an update. Text
+node support is described in `text-node-mount.md`, and recursive element
+children are described in `nested-children.md`.

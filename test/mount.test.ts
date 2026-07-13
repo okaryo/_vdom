@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { mount, type ElementVNode, type TextVNode } from "../src";
 
@@ -52,6 +52,47 @@ describe("mount", () => {
     expect(element?.getAttribute("id")).toBe("introduction");
     expect(element?.getAttribute("class")).toBe("lesson");
     expect(element?.getAttribute("data-topic")).toBe("virtual-dom");
+  });
+
+  it("attaches function props as event listeners", () => {
+    const handleClick = vi.fn();
+    const vnode: ElementVNode = {
+      type: "element",
+      tagName: "button",
+      props: {
+        onClick: handleClick,
+      },
+      children: [],
+    };
+    const container = document.createElement("div");
+
+    mount(vnode, container);
+
+    const button = container.querySelector("button");
+    const event = new MouseEvent("click");
+    button?.dispatchEvent(event);
+
+    expect(handleClick).toHaveBeenCalledOnce();
+    expect(handleClick).toHaveBeenCalledWith(event);
+    expect(button?.hasAttribute("onclick")).toBe(false);
+  });
+
+  it("rejects a function prop without an on<Event> name", () => {
+    const invalidHandler = vi.fn<(event: Event) => void>();
+    const vnode: ElementVNode = {
+      type: "element",
+      tagName: "button",
+      props: {
+        click: invalidHandler,
+      },
+      children: [],
+    };
+    const container = document.createElement("div");
+
+    expect(() => mount(vnode, container)).toThrow(
+      'Event handler prop "click" must start with "on" followed by an event name.',
+    );
+    expect(container.childNodes).toHaveLength(0);
   });
 
   it("recursively mounts element and text children", () => {

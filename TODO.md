@@ -83,7 +83,7 @@ Questions to answer:
 - [x] Create and append text nodes.
 - [x] Mount nested children recursively.
 - [x] Apply string-valued props as basic HTML attributes.
-- [ ] Attach an event listener.
+- [x] Attach an event listener.
 - [x] Add tests or examples that expose the current element-only mount
   lifecycle.
 
@@ -113,6 +113,11 @@ Completed learning unit:
   placeholder VNode; nested child arrays are recursively flattened in order.
 - Child positions are therefore defined by the normalized `VNode[]`, a choice
   that will matter when positional reconciliation is introduced.
+- Function props named `on<Event>` are attached with `addEventListener` during
+  initial mounting instead of being serialized as HTML attributes.
+- Event replacement and removal remain separate update-time behaviors; the
+  initial mount only has one handler to attach and no previous handler to clean
+  up.
 
 Questions to answer:
 

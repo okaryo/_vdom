@@ -138,6 +138,7 @@ const vnode = h(
   "section",
   {
     id: "introduction",
+    onClick: () => console.log("section clicked"),
   },
   ["Virtual DOM lesson ", 1],
 );
@@ -149,11 +150,12 @@ mount(vnode, document.querySelector("#app")!);
 normalizes string and number children into `TextVNode` objects, so `mount`
 continues to receive a canonical `VNode[]`. Nested child arrays are recursively
 flattened, while `null`, `undefined`, and boolean children are omitted. Props
-remain string-valued. `mount` converts a Virtual Node into a real browser
-element or text node and appends it to the container. Element children are
-mounted recursively, and string props are applied as HTML attributes. DOM
-property behavior, events, and reconciliation are intentionally not supported
-yet.
+can contain strings or event handler functions. During mounting, string props
+are applied as HTML attributes and function props named `on<Event>` are attached
+with `addEventListener`. `mount` converts a Virtual Node into a real browser
+element or text node and appends it to the container, recursively mounting its
+children. DOM property behavior, event replacement and removal, and
+reconciliation are intentionally not supported yet.
 
 ## Project Documents
 
@@ -169,3 +171,4 @@ yet.
   mounting.
 - `docs/element-props.md`: notes on initial string props and HTML attributes.
 - `docs/h-function.md`: notes on the pure Virtual Node creation boundary.
+- `docs/event-mount.md`: notes on initial event listener attachment.

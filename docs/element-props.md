@@ -1,6 +1,6 @@
 # Element Props
 
-Element Virtual Nodes now carry string-valued props:
+Element Virtual Nodes carry string or event-handler props:
 
 ```ts
 const vnode: ElementVNode = {
@@ -14,14 +14,17 @@ const vnode: ElementVNode = {
 };
 ```
 
-The initial representation is intentionally narrow:
+The representation remains intentionally narrow:
 
 ```ts
-type ElementProps = Record<string, string>;
+type EventHandler = (event: Event) => void;
+type ElementProp = string | EventHandler;
+type ElementProps = Record<string, ElementProp>;
 ```
 
-Requiring string values keeps the first rule unambiguous. During mounting, each
-entry is applied with `element.setAttribute(name, value)`.
+During mounting, each string entry is applied with
+`element.setAttribute(name, value)`. Each function entry must use an
+`on<Event>` name and is attached with `element.addEventListener`.
 
 ## Renderer Input Versus DOM Properties
 
@@ -29,17 +32,22 @@ The name `props` means inputs attached to a Virtual Node. It does not mean that
 every entry is immediately assigned as a JavaScript property on the real DOM
 object. The renderer decides how each kind of prop reaches the browser.
 
-This first rule treats every prop as an HTML attribute. That works clearly for
-values such as `id`, `class`, and `data-*`, but it is not a complete DOM update
-model. DOM properties and HTML attributes can differ in name, type, and current
-value. Event listeners also require `addEventListener` rather than an attribute.
+String props are treated as HTML attributes. That works clearly for values such
+as `id`, `class`, and `data-*`, but it is not a complete DOM update model. DOM
+properties and HTML attributes can differ in name, type, and current value.
 
-Later steps can widen `ElementProps` and introduce explicit branches for DOM
-properties, styles, and events. Keeping those branches out of the initial rule
-makes each behavior independently observable.
+Function props use an `on<Event>` name and are attached with
+`addEventListener`. For example, `onClick` becomes the `click` event type. This
+keeps listener registration distinct from attribute serialization.
+
+Later steps can introduce explicit branches for DOM properties and styles, then
+compare old and new event props to replace or remove listeners. Keeping these
+behaviors incremental makes each DOM operation independently observable.
 
 ## Current Limitations
 
-Props cannot yet contain booleans, numbers, objects, functions, or removal
-instructions. Mounting only creates a new element, so it also does not compare
-old and new prop sets.
+Props cannot yet contain booleans, numbers, objects, or removal instructions.
+Event names are derived by removing `on` and lowercasing the remaining prop
+name, so custom event names with meaningful casing are not represented. Mounting
+only creates a new element, so it does not compare old and new props or remove
+listeners.

@@ -1,4 +1,8 @@
-export type ElementProps = Record<string, string>;
+export type EventHandler = (event: Event) => void;
+
+export type ElementProp = string | EventHandler;
+
+export type ElementProps = Record<string, ElementProp>;
 
 export type ElementVNode = {
   type: "element";
