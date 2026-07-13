@@ -41,7 +41,7 @@ Roadmap sections are learning themes, not single work units.
   broad React clone.
 - [x] Create initial project documentation.
 - [x] Select the minimal TypeScript build and test tooling.
-- [ ] Create the initial package layout after the first implementation unit is
+- [x] Create the initial package layout after the first implementation unit is
   confirmed.
 
 Tooling decision:
@@ -77,12 +77,20 @@ Questions to answer:
 
 ### 2. Initial DOM Mounting
 
-- [ ] Convert an element Virtual Node into a browser DOM element.
+- [x] Convert an element Virtual Node into a browser DOM element.
 - [ ] Create and append text nodes.
 - [ ] Mount nested children recursively.
 - [ ] Apply basic properties or attributes.
 - [ ] Attach an event listener.
-- [ ] Add tests or examples that expose the complete mount lifecycle.
+- [x] Add tests or examples that expose the current element-only mount
+  lifecycle.
+
+Completed learning unit:
+
+- An element Virtual Node is a plain description with no DOM side effects.
+- `mount` is the explicit boundary that creates and appends a browser element.
+- The created DOM element is returned so tests can observe node identity without
+  storing renderer state on the Virtual Node yet.
 
 Questions to answer:
 

@@ -126,9 +126,30 @@ pnpm typecheck
 pnpm test
 ```
 
+## Running the Current Renderer
+
+The current implementation can mount one explicit element Virtual Node:
+
+```ts
+import { mount, type ElementVNode } from "./src";
+
+const vnode: ElementVNode = {
+  type: "element",
+  tagName: "section",
+};
+
+mount(vnode, document.querySelector("#app")!);
+```
+
+Creating the Virtual Node has no DOM side effects. `mount` converts that plain
+description into a real browser element and appends it to the container. Text,
+properties, children, and reconciliation are intentionally not supported yet.
+
 ## Project Documents
 
 - `README.md`: project purpose, scope, and high-level learning direction.
 - `AGENTS.md`: working instructions for AI agents and future contributors.
 - `LEARNING_PROJECT.md`: reusable AI-assisted learning project pattern.
 - `TODO.md`: living learning roadmap and progress tracker.
+- `docs/initial-element-mount.md`: notes on the first
+  Virtual-Node-to-DOM lifecycle.
