@@ -128,33 +128,35 @@ pnpm test
 
 ## Running the Current Renderer
 
-The current implementation can mount explicit element and text Virtual Nodes:
+The current implementation can create element Virtual Nodes with a minimal `h`
+function and mount element and text Virtual Nodes:
 
 ```ts
-import { mount, type ElementVNode } from "./src";
+import { h, mount, type TextVNode } from "./src";
 
-const vnode: ElementVNode = {
-  type: "element",
-  tagName: "section",
-  props: {
+const title: TextVNode = {
+  type: "text",
+  value: "Virtual DOM",
+};
+
+const vnode = h(
+  "section",
+  {
     id: "introduction",
   },
-  children: [
-    {
-      type: "text",
-      value: "Virtual DOM",
-    },
-  ],
-};
+  [title],
+);
 
 mount(vnode, document.querySelector("#app")!);
 ```
 
-Creating a Virtual Node has no DOM side effects. `mount` converts that plain
-description into a real browser element or text node and appends it to the
-container. Element children are mounted recursively, and string props are
-applied as HTML attributes. DOM property behavior, events, and reconciliation
-are intentionally not supported yet.
+`h` only creates a plain element description and has no DOM side effects. Its
+current inputs remain explicit: props are string-valued and children must
+already be `VNode[]`. `mount` converts a Virtual Node into a real browser
+element or text node and appends it to the container. Element children are
+mounted recursively, and string props are applied as HTML attributes. Primitive
+child normalization, DOM property behavior, events, and reconciliation are
+intentionally not supported yet.
 
 ## Project Documents
 
@@ -169,3 +171,4 @@ are intentionally not supported yet.
 - `docs/nested-children.md`: notes on explicit child arrays and recursive
   mounting.
 - `docs/element-props.md`: notes on initial string props and HTML attributes.
+- `docs/h-function.md`: notes on the pure Virtual Node creation boundary.

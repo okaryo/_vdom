@@ -13,3 +13,16 @@ export type TextVNode = {
 };
 
 export type VNode = ElementVNode | TextVNode;
+
+export function h(
+  tagName: string,
+  props: ElementProps,
+  children: VNode[],
+): ElementVNode {
+  return {
+    type: "element",
+    tagName,
+    props,
+    children,
+  };
+}
