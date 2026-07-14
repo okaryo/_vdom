@@ -26,12 +26,13 @@ exists for it.
 The state is stored only after `mount` succeeds, so a failed initial mount does
 not leave a retained root that was never appended.
 
-## Temporary Second-Render Behavior
+## Current Second-Render Behavior
 
-`render` currently rejects a second call for the same container before touching
-the DOM. Silently mounting again would duplicate the root, while overwriting the
-stored pair would lose the old tree required for comparison.
+On a second call, `render` retrieves the retained pair and passes the old VNode,
+new VNode, and real root node to the reconciliation boundary. It updates the
+retained pair only after reconciliation succeeds.
 
-This rejection is a temporary boundary, not the intended rendering API. The
-next reconciliation steps can replace it incrementally with comparisons and DOM
-mutations, starting with adding a new positional child.
+The current reconciliation branch only adds the first child to a compatible,
+empty root element. Unsupported transitions fail before DOM mutation. This
+keeps the retained tree aligned with the browser while later reconciliation
+behaviors are still missing.

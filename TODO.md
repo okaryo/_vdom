@@ -128,21 +128,23 @@ Questions to answer:
 ### 3. Basic Reconciliation
 
 - [x] Retain the previous rendered tree for a container.
-- [ ] Add a new child node.
+- [x] Add a new child node.
 - [ ] Remove an old child node.
 - [ ] Replace incompatible node types.
 - [ ] Update compatible text nodes in place.
 - [ ] Reuse compatible element nodes.
 - [ ] Reconcile children by position.
-- [ ] Test DOM node identity, not only final HTML output.
+- [x] Test DOM node identity, not only final HTML output.
 
 Current learning unit:
 
 - `render` owns container-level state and retains both the root VNode and its
   mounted DOM node in a `WeakMap`, while `mount` remains a stateless subtree
   creation operation.
-- A second render currently fails before mutating the DOM; the next
-  reconciliation units can extend that branch using the retained old root.
+- The first reconciliation branch reuses a compatible empty root element and
+  mounts one new child into it, preserving the root DOM node's identity.
+- Unsupported root types, prop changes, and other child transitions fail before
+  DOM mutation so retained state does not claim an update that was not applied.
 
 Questions to answer:
 

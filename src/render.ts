@@ -1,4 +1,5 @@
 import { mount } from "./mount";
+import { reconcile } from "./reconcile";
 import type { VNode } from "./vnode";
 
 type RenderedRoot = {
@@ -9,10 +10,14 @@ type RenderedRoot = {
 const renderedRoots = new WeakMap<Node, RenderedRoot>();
 
 export function render(vnode: VNode, container: Node): Node {
-  if (renderedRoots.has(container)) {
-    throw new Error(
-      "Updating an existing render root is not supported until reconciliation is implemented.",
-    );
+  const renderedRoot = renderedRoots.get(container);
+
+  if (renderedRoot !== undefined) {
+    const node = reconcile(renderedRoot.vnode, vnode, renderedRoot.node);
+
+    renderedRoots.set(container, { vnode, node });
+
+    return node;
   }
 
   const node = mount(vnode, container);
