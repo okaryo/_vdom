@@ -118,7 +118,6 @@ Completed learning unit:
 - Event replacement and removal remain separate update-time behaviors; the
   initial mount only has one handler to attach and no previous handler to clean
   up.
-
 Questions to answer:
 
 - Which work belongs to Virtual Node creation versus mounting?
@@ -128,7 +127,7 @@ Questions to answer:
 
 ### 3. Basic Reconciliation
 
-- [ ] Retain the previous rendered tree for a container.
+- [x] Retain the previous rendered tree for a container.
 - [ ] Add a new child node.
 - [ ] Remove an old child node.
 - [ ] Replace incompatible node types.
@@ -136,6 +135,14 @@ Questions to answer:
 - [ ] Reuse compatible element nodes.
 - [ ] Reconcile children by position.
 - [ ] Test DOM node identity, not only final HTML output.
+
+Current learning unit:
+
+- `render` owns container-level state and retains both the root VNode and its
+  mounted DOM node in a `WeakMap`, while `mount` remains a stateless subtree
+  creation operation.
+- A second render currently fails before mutating the DOM; the next
+  reconciliation units can extend that branch using the retained old root.
 
 Questions to answer:
 

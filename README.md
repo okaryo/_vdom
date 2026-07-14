@@ -129,10 +129,10 @@ pnpm test
 ## Running the Current Renderer
 
 The current implementation can create element Virtual Nodes with a minimal `h`
-function and mount element and text Virtual Nodes:
+function and render an initial element or text Virtual Node tree:
 
 ```ts
-import { h, mount } from "./src";
+import { h, render } from "./src";
 
 const vnode = h(
   "section",
@@ -143,7 +143,7 @@ const vnode = h(
   ["Virtual DOM lesson ", 1],
 );
 
-mount(vnode, document.querySelector("#app")!);
+render(vnode, document.querySelector("#app")!);
 ```
 
 `h` only creates a plain element description and has no DOM side effects. It
@@ -152,10 +152,11 @@ continues to receive a canonical `VNode[]`. Nested child arrays are recursively
 flattened, while `null`, `undefined`, and boolean children are omitted. Props
 can contain strings or event handler functions. During mounting, string props
 are applied as HTML attributes and function props named `on<Event>` are attached
-with `addEventListener`. `mount` converts a Virtual Node into a real browser
-element or text node and appends it to the container, recursively mounting its
-children. DOM property behavior, event replacement and removal, and
-reconciliation are intentionally not supported yet.
+with `addEventListener`. `mount` is the stateless operation that creates and
+appends DOM nodes recursively. `render` uses it for the first render, then
+retains the root VNode and DOM node for that container. A second render is
+rejected until reconciliation is implemented. DOM property behavior and event
+replacement and removal are also intentionally not supported yet.
 
 ## Project Documents
 
@@ -172,3 +173,4 @@ reconciliation are intentionally not supported yet.
 - `docs/element-props.md`: notes on initial string props and HTML attributes.
 - `docs/h-function.md`: notes on the pure Virtual Node creation boundary.
 - `docs/event-mount.md`: notes on initial event listener attachment.
+- `docs/render-root-state.md`: notes on container-level retained render state.

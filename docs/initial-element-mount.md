@@ -33,15 +33,16 @@ distinguish element nodes from text nodes.
 including custom element names. Validation is intentionally left to the browser
 at this stage.
 
-`mount` returns the created DOM node but does not store it on the Virtual Node.
-The renderer does not need a persistent Virtual-Node-to-DOM association until
-reconciliation is introduced.
+`mount` returns the created DOM node but remains stateless and does not store it
+on the Virtual Node. The higher-level `render` boundary now retains the root
+VNode and returned DOM node for each container, ready for reconciliation.
 
 ## Current Limitations
 
 The renderer supports string-valued props as HTML attributes and function props
-as event listeners, but not general DOM property behavior. It also mounts every
-call as a new DOM node and performs no comparison with previously rendered
-output, so listeners cannot yet be replaced or removed during an update. Text
-node support is described in `text-node-mount.md`, and recursive element
-children are described in `nested-children.md`.
+as event listeners, but not general DOM property behavior. Direct `mount` calls
+always create a new DOM node. `render` prevents a second render from mutating the
+same container until comparison with the retained output is implemented, so
+listeners cannot yet be replaced or removed during an update. Text node support
+is described in `text-node-mount.md`, and recursive element children are
+described in `nested-children.md`.
