@@ -38,7 +38,7 @@ listeners, although those behaviors are not updated in this step.
 ## Current Limitations
 
 The inverse transition, removing the only child, is now supported by a separate
-branch. Existing children still cannot be updated, incompatible roots cannot be
-replaced, and more than one new child cannot be appended. These transitions
-remain explicit errors so the retained VNode never advances past DOM work that
-was not actually performed.
+branch, and incompatible roots can now be replaced. Existing compatible
+children still cannot be updated, and more than one new child cannot be
+appended. These transitions remain explicit errors so the retained VNode never
+advances past DOM work that was not actually performed.

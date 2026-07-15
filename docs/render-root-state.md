@@ -33,6 +33,6 @@ new VNode, and real root node to the reconciliation boundary. It updates the
 retained pair only after reconciliation succeeds.
 
 The current reconciliation branches add the first child to a compatible empty
-root or remove its only child. Unsupported transitions fail before DOM mutation.
-This keeps the retained tree aligned with the browser while later reconciliation
-behaviors are still missing.
+root, remove its only child, or replace an incompatible root. Unsupported
+transitions fail before DOM mutation. This keeps the retained tree aligned with
+the browser while later reconciliation behaviors are still missing.

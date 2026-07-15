@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { h, render } from "../src";
+import { h, render, type TextVNode } from "../src";
 
 describe("render", () => {
   it("mounts and returns the first root DOM node for a container", () => {
@@ -42,5 +42,36 @@ describe("render", () => {
     expect(nextNode).toBe(firstNode);
     expect(container.firstChild).toBe(firstNode);
     expect(childNode?.parentNode).toBeNull();
+  });
+
+  it("replaces the root when the VNode kind changes", () => {
+    const firstVNode: TextVNode = {
+      type: "text",
+      value: "Loading",
+    };
+    const nextVNode = h("section", {}, ["Loaded"]);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+
+    const nextNode = render(nextVNode, container);
+
+    expect(container.innerHTML).toBe("<section>Loaded</section>");
+    expect(nextNode).not.toBe(firstNode);
+    expect(container.firstChild).toBe(nextNode);
+    expect(firstNode.parentNode).toBeNull();
+  });
+
+  it("replaces an element when its tag name changes", () => {
+    const firstVNode = h("p", {}, ["content"]);
+    const nextVNode = h("section", {}, ["content"]);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+
+    const nextNode = render(nextVNode, container);
+
+    expect(container.innerHTML).toBe("<section>content</section>");
+    expect(nextNode).not.toBe(firstNode);
+    expect(container.firstChild).toBe(nextNode);
+    expect(firstNode.parentNode).toBeNull();
   });
 });

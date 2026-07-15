@@ -130,7 +130,7 @@ Questions to answer:
 - [x] Retain the previous rendered tree for a container.
 - [x] Add a new child node.
 - [x] Remove an old child node.
-- [ ] Replace incompatible node types.
+- [x] Replace incompatible node types.
 - [ ] Update compatible text nodes in place.
 - [ ] Reuse compatible element nodes.
 - [ ] Reconcile children by position.
@@ -145,6 +145,8 @@ Current learning unit:
   mounts one new child into it, preserving the root DOM node's identity.
 - The inverse branch removes an element's only child from the existing root and
   makes the removed DOM node's disconnection observable in a test.
+- VNodes are incompatible when their kinds differ or their element tag names
+  differ; reconciliation replaces the corresponding DOM node in those cases.
 - Unsupported root types, prop changes, and other child transitions fail before
   DOM mutation so retained state does not claim an update that was not applied.
 

@@ -128,8 +128,8 @@ pnpm test
 
 ## Running the Current Renderer
 
-The current implementation can render an initial Virtual Node tree and perform
-two narrow updates: adding or removing an element's only child.
+The current implementation can render an initial Virtual Node tree, add or
+remove an element's only child, and replace an incompatible root.
 
 ```ts
 import { h, render } from "./src";
@@ -145,9 +145,11 @@ const nextVNode = h("ul", { id: "lessons", onClick: handleClick }, [
 const firstNode = render(firstVNode, container);
 const nextNode = render(nextVNode, container);
 const finalNode = render(firstVNode, container);
+const replacementNode = render(h("p", {}, ["Complete"]), container);
 
 console.log(firstNode === nextNode); // true
 console.log(nextNode === finalNode); // true
+console.log(finalNode === replacementNode); // false
 ```
 
 `h` only creates a plain element description and has no DOM side effects. It
@@ -160,8 +162,9 @@ with `addEventListener`. `mount` is the stateless operation that creates and
 appends DOM nodes recursively. `render` uses it for the first render, then
 retains the root VNode and DOM node for that container. During subsequent
 renders, the current reconciliation branches can reuse the same element root to
-mount its first child or remove its only child. Other child transitions, root
-replacement, DOM property behavior, and event replacement and removal are
+mount its first child or remove its only child. When VNode kinds or element tag
+names differ, the root is replaced instead. Other child transitions, compatible
+text updates, DOM property behavior, and event replacement and removal are
 intentionally not supported yet.
 
 ## Project Documents
@@ -184,3 +187,5 @@ intentionally not supported yet.
   update and root identity reuse.
 - `docs/child-removal-reconciliation.md`: notes on removing a child while
   preserving its parent node.
+- `docs/incompatible-node-replacement.md`: notes on compatibility and deliberate
+  DOM identity replacement.

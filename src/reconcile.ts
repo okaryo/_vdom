@@ -14,15 +14,47 @@ function haveSameProps(oldProps: ElementProps, newProps: ElementProps): boolean 
   );
 }
 
+function areCompatible(oldVNode: VNode, newVNode: VNode): boolean {
+  if (oldVNode.type === "text" && newVNode.type === "text") {
+    return true;
+  }
+
+  if (oldVNode.type === "element" && newVNode.type === "element") {
+    return oldVNode.tagName === newVNode.tagName;
+  }
+
+  return false;
+}
+
+function replaceVNode(newVNode: VNode, node: Node): Node {
+  const parent = node.parentNode;
+
+  if (parent === null) {
+    throw new Error("Cannot replace a DOM node without a parent.");
+  }
+
+  const fragment = document.createDocumentFragment();
+  const newNode = mount(newVNode, fragment);
+
+  parent.replaceChild(newNode, node);
+
+  return newNode;
+}
+
 export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
-  if (
-    oldVNode.type !== "element" ||
-    newVNode.type !== "element" ||
-    oldVNode.tagName !== newVNode.tagName ||
-    !(node instanceof Element)
-  ) {
+  if (!areCompatible(oldVNode, newVNode)) {
+    return replaceVNode(newVNode, node);
+  }
+
+  if (oldVNode.type === "text" || newVNode.type === "text") {
     throw new Error(
-      "This reconciliation step only supports updating the same root element type.",
+      "Updating a compatible text node is not supported by this reconciliation step.",
+    );
+  }
+
+  if (!(node instanceof Element)) {
+    throw new Error(
+      "The retained root DOM does not match the old element VNode.",
     );
   }
 
