@@ -28,4 +28,19 @@ describe("render", () => {
     expect(container.firstChild).toBe(firstNode);
     expect(firstNode.firstChild?.nodeName).toBe("LI");
   });
+
+  it("removes the only child while preserving the root DOM node", () => {
+    const firstVNode = h("ul", {}, [h("li", {}, ["old child"])]);
+    const nextVNode = h("ul", {}, []);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+    const childNode = firstNode.firstChild;
+
+    const nextNode = render(nextVNode, container);
+
+    expect(container.innerHTML).toBe("<ul></ul>");
+    expect(nextNode).toBe(firstNode);
+    expect(container.firstChild).toBe(firstNode);
+    expect(childNode?.parentNode).toBeNull();
+  });
 });

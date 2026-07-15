@@ -32,7 +32,7 @@ On a second call, `render` retrieves the retained pair and passes the old VNode,
 new VNode, and real root node to the reconciliation boundary. It updates the
 retained pair only after reconciliation succeeds.
 
-The current reconciliation branch only adds the first child to a compatible,
-empty root element. Unsupported transitions fail before DOM mutation. This
-keeps the retained tree aligned with the browser while later reconciliation
+The current reconciliation branches add the first child to a compatible empty
+root or remove its only child. Unsupported transitions fail before DOM mutation.
+This keeps the retained tree aligned with the browser while later reconciliation
 behaviors are still missing.

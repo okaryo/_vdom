@@ -129,7 +129,7 @@ pnpm test
 ## Running the Current Renderer
 
 The current implementation can render an initial Virtual Node tree and perform
-one deliberately narrow update: adding the first child to an empty element.
+two narrow updates: adding or removing an element's only child.
 
 ```ts
 import { h, render } from "./src";
@@ -144,8 +144,10 @@ const nextVNode = h("ul", { id: "lessons", onClick: handleClick }, [
 
 const firstNode = render(firstVNode, container);
 const nextNode = render(nextVNode, container);
+const finalNode = render(firstVNode, container);
 
 console.log(firstNode === nextNode); // true
+console.log(nextNode === finalNode); // true
 ```
 
 `h` only creates a plain element description and has no DOM side effects. It
@@ -156,10 +158,11 @@ can contain strings or event handler functions. During mounting, string props
 are applied as HTML attributes and function props named `on<Event>` are attached
 with `addEventListener`. `mount` is the stateless operation that creates and
 appends DOM nodes recursively. `render` uses it for the first render, then
-retains the root VNode and DOM node for that container. On the second render,
-the current reconciliation branch can reuse the same element root and mount its
-first child. Other child transitions, root replacement, DOM property behavior,
-and event replacement and removal are intentionally not supported yet.
+retains the root VNode and DOM node for that container. During subsequent
+renders, the current reconciliation branches can reuse the same element root to
+mount its first child or remove its only child. Other child transitions, root
+replacement, DOM property behavior, and event replacement and removal are
+intentionally not supported yet.
 
 ## Project Documents
 
@@ -179,3 +182,5 @@ and event replacement and removal are intentionally not supported yet.
 - `docs/render-root-state.md`: notes on container-level retained render state.
 - `docs/first-child-reconciliation.md`: notes on the first incremental DOM
   update and root identity reuse.
+- `docs/child-removal-reconciliation.md`: notes on removing a child while
+  preserving its parent node.

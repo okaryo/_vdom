@@ -32,13 +32,33 @@ export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
     );
   }
 
-  if (oldVNode.children.length !== 0 || newVNode.children.length !== 1) {
-    throw new Error(
-      "This reconciliation step only supports adding the first child to an empty element.",
-    );
+  if (oldVNode.children.length === 0 && newVNode.children.length === 1) {
+    if (node.childNodes.length !== 0) {
+      throw new Error(
+        "The retained root DOM does not match the old VNode child count.",
+      );
+    }
+
+    mount(newVNode.children[0], node);
+
+    return node;
   }
 
-  mount(newVNode.children[0], node);
+  if (oldVNode.children.length === 1 && newVNode.children.length === 0) {
+    const childNode = node.firstChild;
 
-  return node;
+    if (childNode === null || node.childNodes.length !== 1) {
+      throw new Error(
+        "The retained root DOM does not match the old VNode child count.",
+      );
+    }
+
+    node.removeChild(childNode);
+
+    return node;
+  }
+
+  throw new Error(
+    "This reconciliation step only supports adding or removing the only child of an element.",
+  );
 }

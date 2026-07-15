@@ -129,7 +129,7 @@ Questions to answer:
 
 - [x] Retain the previous rendered tree for a container.
 - [x] Add a new child node.
-- [ ] Remove an old child node.
+- [x] Remove an old child node.
 - [ ] Replace incompatible node types.
 - [ ] Update compatible text nodes in place.
 - [ ] Reuse compatible element nodes.
@@ -143,6 +143,8 @@ Current learning unit:
   creation operation.
 - The first reconciliation branch reuses a compatible empty root element and
   mounts one new child into it, preserving the root DOM node's identity.
+- The inverse branch removes an element's only child from the existing root and
+  makes the removed DOM node's disconnection observable in a test.
 - Unsupported root types, prop changes, and other child transitions fail before
   DOM mutation so retained state does not claim an update that was not applied.
 
