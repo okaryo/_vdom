@@ -74,4 +74,24 @@ describe("render", () => {
     expect(container.firstChild).toBe(nextNode);
     expect(firstNode.parentNode).toBeNull();
   });
+
+  it("updates a compatible text node while preserving its identity", () => {
+    const firstVNode: TextVNode = {
+      type: "text",
+      value: "Loading",
+    };
+    const nextVNode: TextVNode = {
+      type: "text",
+      value: "Loaded",
+    };
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+
+    const nextNode = render(nextVNode, container);
+
+    expect(container.textContent).toBe("Loaded");
+    expect(nextNode).toBe(firstNode);
+    expect(container.firstChild).toBe(firstNode);
+    expect(firstNode.nodeValue).toBe("Loaded");
+  });
 });

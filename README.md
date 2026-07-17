@@ -129,7 +129,8 @@ pnpm test
 ## Running the Current Renderer
 
 The current implementation can render an initial Virtual Node tree, add or
-remove an element's only child, and replace an incompatible root.
+remove an element's only child, replace an incompatible root, and update a
+compatible root text node in place.
 
 ```ts
 import { h, render } from "./src";
@@ -164,8 +165,9 @@ retains the root VNode and DOM node for that container. During subsequent
 renders, the current reconciliation branches can reuse the same element root to
 mount its first child or remove its only child. When VNode kinds or element tag
 names differ, the root is replaced instead. Other child transitions, compatible
-text updates, DOM property behavior, and event replacement and removal are
-intentionally not supported yet.
+element child updates, DOM property behavior, and event replacement and removal
+are intentionally not supported yet. Compatible text roots retain their DOM
+identity and update only their `Text.data` value.
 
 ## Project Documents
 
@@ -189,3 +191,5 @@ intentionally not supported yet.
   preserving its parent node.
 - `docs/incompatible-node-replacement.md`: notes on compatibility and deliberate
   DOM identity replacement.
+- `docs/text-node-reconciliation.md`: notes on updating text content without
+  replacing the DOM node.

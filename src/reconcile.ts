@@ -46,9 +46,23 @@ export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
     return replaceVNode(newVNode, node);
   }
 
-  if (oldVNode.type === "text" || newVNode.type === "text") {
+  if (oldVNode.type === "text" && newVNode.type === "text") {
+    if (!(node instanceof Text)) {
+      throw new Error(
+        "The retained root DOM does not match the old text VNode.",
+      );
+    }
+
+    if (oldVNode.value !== newVNode.value) {
+      node.data = newVNode.value;
+    }
+
+    return node;
+  }
+
+  if (oldVNode.type !== "element" || newVNode.type !== "element") {
     throw new Error(
-      "Updating a compatible text node is not supported by this reconciliation step.",
+      "Compatible VNodes must both be text nodes or matching elements.",
     );
   }
 

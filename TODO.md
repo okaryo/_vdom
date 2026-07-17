@@ -131,7 +131,7 @@ Questions to answer:
 - [x] Add a new child node.
 - [x] Remove an old child node.
 - [x] Replace incompatible node types.
-- [ ] Update compatible text nodes in place.
+- [x] Update compatible text nodes in place.
 - [ ] Reuse compatible element nodes.
 - [ ] Reconcile children by position.
 - [x] Test DOM node identity, not only final HTML output.
@@ -147,6 +147,8 @@ Current learning unit:
   makes the removed DOM node's disconnection observable in a test.
 - VNodes are incompatible when their kinds differ or their element tag names
   differ; reconciliation replaces the corresponding DOM node in those cases.
+- Compatible text VNodes reuse the existing `Text` DOM node and update its
+  `data` only when the string value changes.
 - Unsupported root types, prop changes, and other child transitions fail before
   DOM mutation so retained state does not claim an update that was not applied.
 

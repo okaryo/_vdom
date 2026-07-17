@@ -44,4 +44,5 @@ the node retained for the next render.
 
 Compatibility is therefore not simply "the markup changed." It answers whether
 the existing DOM object is capable of representing the new VNode while keeping
-its identity.
+its identity. Compatible text VNodes now demonstrate the opposite path: their
+existing DOM node is retained and only its stored text data changes.
