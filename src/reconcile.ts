@@ -41,6 +41,44 @@ function replaceVNode(newVNode: VNode, node: Node): Node {
   return newNode;
 }
 
+function reconcileChildrenByPosition(
+  oldChildren: VNode[],
+  newChildren: VNode[],
+  element: Element,
+): void {
+  if (element.childNodes.length !== oldChildren.length) {
+    throw new Error(
+      "The retained element DOM does not match the old VNode child count.",
+    );
+  }
+
+  const commonLength = Math.min(oldChildren.length, newChildren.length);
+
+  for (let index = 0; index < commonLength; index += 1) {
+    const childNode = element.childNodes.item(index);
+
+    if (childNode === null) {
+      throw new Error(`Missing DOM child at position ${index}.`);
+    }
+
+    reconcile(oldChildren[index], newChildren[index], childNode);
+  }
+
+  for (let index = commonLength; index < newChildren.length; index += 1) {
+    mount(newChildren[index], element);
+  }
+
+  while (element.childNodes.length > newChildren.length) {
+    const childNode = element.lastChild;
+
+    if (childNode === null) {
+      throw new Error("Cannot remove a missing DOM child.");
+    }
+
+    element.removeChild(childNode);
+  }
+}
+
 export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
   if (!areCompatible(oldVNode, newVNode)) {
     return replaceVNode(newVNode, node);
@@ -78,43 +116,11 @@ export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
     );
   }
 
-  if (oldVNode.children.length === 0 && newVNode.children.length === 0) {
-    if (node.childNodes.length !== 0) {
-      throw new Error(
-        "The retained root DOM does not match the old VNode child count.",
-      );
-    }
-
-    return node;
-  }
-
-  if (oldVNode.children.length === 0 && newVNode.children.length === 1) {
-    if (node.childNodes.length !== 0) {
-      throw new Error(
-        "The retained root DOM does not match the old VNode child count.",
-      );
-    }
-
-    mount(newVNode.children[0], node);
-
-    return node;
-  }
-
-  if (oldVNode.children.length === 1 && newVNode.children.length === 0) {
-    const childNode = node.firstChild;
-
-    if (childNode === null || node.childNodes.length !== 1) {
-      throw new Error(
-        "The retained root DOM does not match the old VNode child count.",
-      );
-    }
-
-    node.removeChild(childNode);
-
-    return node;
-  }
-
-  throw new Error(
-    "This reconciliation step only supports adding or removing the only child of an element.",
+  reconcileChildrenByPosition(
+    oldVNode.children,
+    newVNode.children,
+    node,
   );
+
+  return node;
 }

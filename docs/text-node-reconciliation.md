@@ -43,6 +43,5 @@ Skipping the assignment when the value is unchanged also keeps the declarative
 comparison separate from the actual DOM mutation: a render call does not imply
 that a browser write is always necessary.
 
-This step handles a text node only when it is the retained render root. The same
-operation can later be reused for nested text during positional child
-reconciliation.
+Positional child reconciliation now reuses this same operation for nested text
+nodes as well as the retained render root.

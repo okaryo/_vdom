@@ -28,12 +28,12 @@ Serialized HTML alone cannot prove reuse because replacing the element could
 produce identical markup. Object identity makes the no-replacement decision
 observable.
 
-## Current Boundary
+## Child Reconciliation
 
-This no-op branch currently handles empty elements with unchanged props. The
-tag name establishes element compatibility, while the prop comparison prevents
-the renderer from silently accepting an update it cannot apply yet.
+The tag name establishes element compatibility, while the prop comparison
+prevents the renderer from silently accepting an update it cannot apply yet.
+Empty elements still take the no-mutation path, and elements with children now
+reconcile those children recursively by position.
 
-Elements with children require positional child reconciliation before their
-subtrees can be checked and updated recursively. Changed props will later need
-their own update boundary for attributes and event listeners.
+Changed props still need their own update boundary for attributes and event
+listeners.

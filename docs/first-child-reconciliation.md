@@ -37,8 +37,6 @@ listeners, although those behaviors are not updated in this step.
 
 ## Current Limitations
 
-The inverse transition, removing the only child, is now supported by a separate
-branch, and incompatible roots can now be replaced. Existing compatible
-children still cannot be updated, and more than one new child cannot be
-appended. These transitions remain explicit errors so the retained VNode never
-advances past DOM work that was not actually performed.
+This original narrow transition is now one case of positional child
+reconciliation. The general algorithm can update shared positions recursively,
+append multiple trailing children, and remove surplus trailing children.

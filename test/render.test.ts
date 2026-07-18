@@ -109,4 +109,51 @@ describe("render", () => {
     expect(nextNode).toBe(firstNode);
     expect(container.firstChild).toBe(firstNode);
   });
+
+  it("recursively reconciles nested children by position", () => {
+    const firstVNode = h("ul", {}, [
+      h("li", { "data-id": "first" }, ["First"]),
+      h("li", { "data-id": "second" }, ["Second"]),
+    ]);
+    const nextVNode = h("ul", {}, [
+      h("li", { "data-id": "first" }, ["First updated"]),
+      h("li", { "data-id": "second" }, ["Second"]),
+      h("li", { "data-id": "third" }, ["Third"]),
+    ]);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+    const firstItem = firstNode.childNodes.item(0);
+    const firstText = firstItem?.firstChild;
+    const secondItem = firstNode.childNodes.item(1);
+
+    const nextNode = render(nextVNode, container);
+
+    expect(container.innerHTML).toBe(
+      '<ul><li data-id="first">First updated</li><li data-id="second">Second</li><li data-id="third">Third</li></ul>',
+    );
+    expect(nextNode).toBe(firstNode);
+    expect(nextNode.childNodes.item(0)).toBe(firstItem);
+    expect(firstItem?.firstChild).toBe(firstText);
+    expect(nextNode.childNodes.item(1)).toBe(secondItem);
+    expect(nextNode.childNodes.item(2).textContent).toBe("Third");
+  });
+
+  it("matches children by position instead of moving a later node", () => {
+    const firstVNode = h("div", {}, [
+      h("p", {}, ["remove"]),
+      h("button", {}, ["keep"]),
+    ]);
+    const nextVNode = h("div", {}, [h("button", {}, ["keep"])]);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+    const oldButton = firstNode.childNodes.item(1);
+
+    const nextNode = render(nextVNode, container);
+    const nextButton = nextNode.firstChild;
+
+    expect(container.innerHTML).toBe("<div><button>keep</button></div>");
+    expect(nextNode).toBe(firstNode);
+    expect(nextButton).not.toBe(oldButton);
+    expect(oldButton.parentNode).toBeNull();
+  });
 });

@@ -133,7 +133,7 @@ Questions to answer:
 - [x] Replace incompatible node types.
 - [x] Update compatible text nodes in place.
 - [x] Reuse compatible element nodes.
-- [ ] Reconcile children by position.
+- [x] Reconcile children by position.
 - [x] Test DOM node identity, not only final HTML output.
 
 Current learning unit:
@@ -141,18 +141,18 @@ Current learning unit:
 - `render` owns container-level state and retains both the root VNode and its
   mounted DOM node in a `WeakMap`, while `mount` remains a stateless subtree
   creation operation.
-- The first reconciliation branch reuses a compatible empty root element and
-  mounts one new child into it, preserving the root DOM node's identity.
-- The inverse branch removes an element's only child from the existing root and
-  makes the removed DOM node's disconnection observable in a test.
+- Compatible element children are matched by array index. Shared positions are
+  reconciled recursively, extra new children are mounted at the end, and extra
+  old children are removed from the end.
 - VNodes are incompatible when their kinds differ or their element tag names
   differ; reconciliation replaces the corresponding DOM node in those cases.
 - Compatible text VNodes reuse the existing `Text` DOM node and update its
   `data` only when the string value changes.
-- Compatible empty element VNodes with unchanged props return the retained DOM
-  element without performing a child mutation.
-- Unsupported root types, prop changes, and other child transitions fail before
-  DOM mutation so retained state does not claim an update that was not applied.
+- Compatible element VNodes with unchanged props retain their DOM identity while
+  their nested children are reconciled.
+- Positional matching does not search later positions for a reusable node, so
+  inserting or removing near the front can replace nodes that keyed matching
+  could move instead.
 
 Questions to answer:
 

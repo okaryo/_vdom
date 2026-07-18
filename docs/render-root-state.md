@@ -32,9 +32,12 @@ On a second call, `render` retrieves the retained pair and passes the old VNode,
 new VNode, and real root node to the reconciliation boundary. It updates the
 retained pair only after reconciliation succeeds.
 
-The current reconciliation branches add the first child to a compatible empty
-root, remove its only child, update a compatible text root, or replace an
-incompatible root. They also return an unchanged compatible empty element root
-without a DOM write. Unsupported transitions fail before DOM mutation. This
-keeps the retained tree aligned with the browser while later reconciliation
-behaviors are still missing.
+The current reconciliation recursively matches compatible element children by
+position. It updates compatible text, appends or removes trailing children, and
+replaces incompatible nodes. The retained root pair is updated after the
+reconciliation call returns.
+
+This learning renderer does not preflight the entire subtree before mutation.
+If an unsupported prop change is discovered after an earlier sibling was
+already updated, that render can be partially applied. Prop reconciliation and
+stronger failure handling remain later topics.

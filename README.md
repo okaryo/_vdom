@@ -128,10 +128,10 @@ pnpm test
 
 ## Running the Current Renderer
 
-The current implementation can render an initial Virtual Node tree, add or
-remove an element's only child, replace an incompatible root, and update a
-compatible root text node in place. A compatible empty element can also be
-rendered again without replacing or mutating its DOM node.
+The current implementation can render an initial Virtual Node tree and
+reconcile compatible element children by position. It reuses compatible DOM
+nodes, updates text in place, appends and removes trailing children, and replaces
+incompatible nodes.
 
 ```ts
 import { h, render } from "./src";
@@ -139,19 +139,22 @@ import { h, render } from "./src";
 const container = document.querySelector("#app")!;
 const handleClick = () => console.log("list clicked");
 
-const firstVNode = h("ul", { id: "lessons", onClick: handleClick }, []);
+const firstVNode = h("ul", { id: "lessons", onClick: handleClick }, [
+  h("li", {}, ["Mounting"]),
+  h("li", {}, ["Reconciliation"]),
+]);
 const nextVNode = h("ul", { id: "lessons", onClick: handleClick }, [
-  h("li", {}, ["Virtual DOM"]),
+  h("li", {}, ["Mounting complete"]),
+  h("li", {}, ["Reconciliation"]),
+  h("li", {}, ["Properties"]),
 ]);
 
 const firstNode = render(firstVNode, container);
+const firstItem = firstNode.firstChild;
 const nextNode = render(nextVNode, container);
-const finalNode = render(firstVNode, container);
-const replacementNode = render(h("p", {}, ["Complete"]), container);
 
 console.log(firstNode === nextNode); // true
-console.log(nextNode === finalNode); // true
-console.log(finalNode === replacementNode); // false
+console.log(firstItem === nextNode.firstChild); // true
 ```
 
 `h` only creates a plain element description and has no DOM side effects. It
@@ -163,14 +166,11 @@ are applied as HTML attributes and function props named `on<Event>` are attached
 with `addEventListener`. `mount` is the stateless operation that creates and
 appends DOM nodes recursively. `render` uses it for the first render, then
 retains the root VNode and DOM node for that container. During subsequent
-renders, the current reconciliation branches can reuse the same element root to
-mount its first child or remove its only child. When VNode kinds or element tag
-names differ, the root is replaced instead. Other child transitions, compatible
-element child updates, DOM property behavior, and event replacement and removal
-are intentionally not supported yet. Compatible text roots retain their DOM
-identity and update only their `Text.data` value.
-Compatible empty element roots with unchanged props are also returned as-is;
-creating a new VNode description does not by itself require a DOM mutation.
+renders, compatible element children at the same index are reconciled
+recursively. New trailing children are mounted, surplus trailing children are
+removed, and incompatible nodes are replaced. Compatible text nodes retain
+their identity and update only `Text.data`. DOM property behavior and event
+replacement and removal are intentionally not supported yet.
 
 ## Project Documents
 
@@ -198,3 +198,5 @@ creating a new VNode description does not by itself require a DOM mutation.
   replacing the DOM node.
 - `docs/compatible-element-reuse.md`: notes on reusing an element when no DOM
   change is required.
+- `docs/positional-child-reconciliation.md`: notes on recursive index-based
+  matching and its identity tradeoffs.

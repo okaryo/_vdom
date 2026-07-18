@@ -33,8 +33,8 @@ document subtree. Event listeners and other state on that node remain attached
 to the detached object until it becomes unreachable and can be garbage
 collected.
 
-## Current Limitations
+## Positional Generalization
 
-Only the sole child of a compatible root element can be removed. Selecting a
-child by position from a longer list is deferred until positional child
-reconciliation is introduced.
+Removal is now generalized to positional child arrays. Shared positions are
+reconciled first, then surplus old children are removed from the end until the
+DOM length matches the new child array.
