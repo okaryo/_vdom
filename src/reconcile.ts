@@ -1,18 +1,6 @@
 import { mount } from "./mount";
-import type { ElementProps, VNode } from "./vnode";
-
-function haveSameProps(oldProps: ElementProps, newProps: ElementProps): boolean {
-  const oldNames = Object.keys(oldProps);
-  const newNames = Object.keys(newProps);
-
-  return (
-    oldNames.length === newNames.length &&
-    oldNames.every(
-      (name) =>
-        Object.hasOwn(newProps, name) && oldProps[name] === newProps[name],
-    )
-  );
-}
+import { updateElementProps } from "./props";
+import type { VNode } from "./vnode";
 
 function areCompatible(oldVNode: VNode, newVNode: VNode): boolean {
   if (oldVNode.type === "text" && newVNode.type === "text") {
@@ -110,11 +98,7 @@ export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
     );
   }
 
-  if (!haveSameProps(oldVNode.props, newVNode.props)) {
-    throw new Error(
-      "Updating element props is not supported by this reconciliation step.",
-    );
-  }
+  updateElementProps(oldVNode.props, newVNode.props, node);
 
   reconcileChildrenByPosition(
     oldVNode.children,

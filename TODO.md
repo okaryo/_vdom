@@ -163,12 +163,22 @@ Questions to answer:
 
 ### 4. Properties, Styles, And Events
 
+- [x] Add, update, and remove string-valued HTML attributes.
 - [ ] Add, update, and remove common DOM properties.
 - [x] Define the initial attribute rule: string props use `setAttribute`.
 - [ ] Update class and style values.
 - [ ] Replace and remove event listeners without accumulating handlers.
 - [ ] Cover controlled form properties such as `value` if useful.
 - [ ] Document intentionally unsupported DOM edge cases.
+
+Current learning unit:
+
+- Element prop updates have their own `updateElementProps` boundary instead of
+  being mixed into child reconciliation.
+- Missing old string props use `removeAttribute`; new or changed string props
+  use `setAttribute`; unchanged values produce no attribute write.
+- Event handlers must remain the same function reference until listener
+  replacement and removal are implemented separately.
 
 Questions to answer:
 

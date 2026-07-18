@@ -30,10 +30,10 @@ observable.
 
 ## Child Reconciliation
 
-The tag name establishes element compatibility, while the prop comparison
-prevents the renderer from silently accepting an update it cannot apply yet.
-Empty elements still take the no-mutation path, and elements with children now
-reconcile those children recursively by position.
+The tag name establishes element compatibility. Empty elements still take the
+no-child-mutation path, and elements with children reconcile those children
+recursively by position. String attribute differences are now updated on the
+same element before its children are reconciled.
 
-Changed props still need their own update boundary for attributes and event
-listeners.
+Event listener changes and general DOM properties still need their own update
+behavior.

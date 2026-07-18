@@ -139,15 +139,33 @@ import { h, render } from "./src";
 const container = document.querySelector("#app")!;
 const handleClick = () => console.log("list clicked");
 
-const firstVNode = h("ul", { id: "lessons", onClick: handleClick }, [
-  h("li", {}, ["Mounting"]),
-  h("li", {}, ["Reconciliation"]),
-]);
-const nextVNode = h("ul", { id: "lessons", onClick: handleClick }, [
-  h("li", {}, ["Mounting complete"]),
-  h("li", {}, ["Reconciliation"]),
-  h("li", {}, ["Properties"]),
-]);
+const firstVNode = h(
+  "ul",
+  {
+    id: "lessons",
+    class: "pending",
+    title: "Loading lessons",
+    onClick: handleClick,
+  },
+  [
+    h("li", {}, ["Mounting"]),
+    h("li", {}, ["Reconciliation"]),
+  ],
+);
+const nextVNode = h(
+  "ul",
+  {
+    id: "lessons",
+    class: "ready",
+    "data-state": "complete",
+    onClick: handleClick,
+  },
+  [
+    h("li", {}, ["Mounting complete"]),
+    h("li", {}, ["Reconciliation"]),
+    h("li", {}, ["Properties"]),
+  ],
+);
 
 const firstNode = render(firstVNode, container);
 const firstItem = firstNode.firstChild;
@@ -169,7 +187,8 @@ retains the root VNode and DOM node for that container. During subsequent
 renders, compatible element children at the same index are reconciled
 recursively. New trailing children are mounted, surplus trailing children are
 removed, and incompatible nodes are replaced. Compatible text nodes retain
-their identity and update only `Text.data`. DOM property behavior and event
+their identity and update only `Text.data`. String attributes are added,
+updated, or removed on reused elements. General DOM property behavior and event
 replacement and removal are intentionally not supported yet.
 
 ## Project Documents
@@ -200,3 +219,5 @@ replacement and removal are intentionally not supported yet.
   change is required.
 - `docs/positional-child-reconciliation.md`: notes on recursive index-based
   matching and its identity tradeoffs.
+- `docs/attribute-reconciliation.md`: notes on string attribute addition,
+  update, and removal.

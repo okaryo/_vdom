@@ -55,8 +55,8 @@ renderer identify a logical child independently of its array position.
 
 ## Current Limitations
 
-Element props must still be unchanged. The renderer also applies mutations as
-it walks from left to right rather than validating the complete subtree first.
-An unsupported update found in a later sibling can therefore occur after an
-earlier sibling was already changed. This non-transactional behavior is an
-explicit limitation of the current learning implementation.
+The renderer applies mutations as it walks from left to right rather than
+validating the complete subtree first. An unsupported event-handler update
+found in a later sibling can therefore occur after an earlier sibling was
+already changed. This non-transactional behavior is an explicit limitation of
+the current learning implementation.

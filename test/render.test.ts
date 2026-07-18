@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { h, render, type TextVNode } from "../src";
 
@@ -155,5 +155,39 @@ describe("render", () => {
     expect(nextNode).toBe(firstNode);
     expect(nextButton).not.toBe(oldButton);
     expect(oldButton.parentNode).toBeNull();
+  });
+
+  it("adds, updates, and removes string attributes on a reused element", () => {
+    const handleClick = vi.fn<(event: Event) => void>();
+    const firstVNode = h(
+      "button",
+      {
+        id: "before",
+        title: "remove me",
+        onClick: handleClick,
+      },
+      ["Save"],
+    );
+    const nextVNode = h(
+      "button",
+      {
+        id: "after",
+        "data-state": "ready",
+        onClick: handleClick,
+      },
+      ["Save"],
+    );
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+
+    const nextNode = render(nextVNode, container);
+    const button = container.querySelector("button");
+    button?.dispatchEvent(new MouseEvent("click"));
+
+    expect(nextNode).toBe(firstNode);
+    expect(button?.getAttribute("id")).toBe("after");
+    expect(button?.getAttribute("data-state")).toBe("ready");
+    expect(button?.hasAttribute("title")).toBe(false);
+    expect(handleClick).toHaveBeenCalledOnce();
   });
 });

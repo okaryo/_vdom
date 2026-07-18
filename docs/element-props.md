@@ -40,14 +40,15 @@ Function props use an `on<Event>` name and are attached with
 `addEventListener`. For example, `onClick` becomes the `click` event type. This
 keeps listener registration distinct from attribute serialization.
 
-Later steps can introduce explicit branches for DOM properties and styles, then
-compare old and new event props to replace or remove listeners. Keeping these
-behaviors incremental makes each DOM operation independently observable.
+During reconciliation, string props are now compared by name. Missing values
+remove attributes, while new or changed values set attributes. Later steps can
+introduce explicit branches for DOM properties and styles, then compare old and
+new event props to replace or remove listeners. Keeping these behaviors
+incremental makes each DOM operation independently observable.
 
 ## Current Limitations
 
 Props cannot yet contain booleans, numbers, objects, or removal instructions.
 Event names are derived by removing `on` and lowercasing the remaining prop
-name, so custom event names with meaningful casing are not represented. Mounting
-only creates a new element, so it does not compare old and new props or remove
-listeners.
+name, so custom event names with meaningful casing are not represented. Event
+handlers cannot yet be added, replaced, or removed during reconciliation.

@@ -38,6 +38,6 @@ replaces incompatible nodes. The retained root pair is updated after the
 reconciliation call returns.
 
 This learning renderer does not preflight the entire subtree before mutation.
-If an unsupported prop change is discovered after an earlier sibling was
-already updated, that render can be partially applied. Prop reconciliation and
-stronger failure handling remain later topics.
+If an unsupported event-handler change is discovered after an earlier sibling
+was already updated, that render can be partially applied. Stronger failure
+handling remains a later topic.
