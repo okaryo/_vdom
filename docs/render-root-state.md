@@ -34,6 +34,7 @@ retained pair only after reconciliation succeeds.
 
 The current reconciliation branches add the first child to a compatible empty
 root, remove its only child, update a compatible text root, or replace an
-incompatible root. Unsupported transitions fail before DOM mutation. This keeps
-the retained tree aligned with the browser while later reconciliation behaviors
-are still missing.
+incompatible root. They also return an unchanged compatible empty element root
+without a DOM write. Unsupported transitions fail before DOM mutation. This
+keeps the retained tree aligned with the browser while later reconciliation
+behaviors are still missing.

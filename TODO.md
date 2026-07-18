@@ -132,7 +132,7 @@ Questions to answer:
 - [x] Remove an old child node.
 - [x] Replace incompatible node types.
 - [x] Update compatible text nodes in place.
-- [ ] Reuse compatible element nodes.
+- [x] Reuse compatible element nodes.
 - [ ] Reconcile children by position.
 - [x] Test DOM node identity, not only final HTML output.
 
@@ -149,6 +149,8 @@ Current learning unit:
   differ; reconciliation replaces the corresponding DOM node in those cases.
 - Compatible text VNodes reuse the existing `Text` DOM node and update its
   `data` only when the string value changes.
+- Compatible empty element VNodes with unchanged props return the retained DOM
+  element without performing a child mutation.
 - Unsupported root types, prop changes, and other child transitions fail before
   DOM mutation so retained state does not claim an update that was not applied.
 

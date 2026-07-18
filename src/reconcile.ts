@@ -78,6 +78,16 @@ export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
     );
   }
 
+  if (oldVNode.children.length === 0 && newVNode.children.length === 0) {
+    if (node.childNodes.length !== 0) {
+      throw new Error(
+        "The retained root DOM does not match the old VNode child count.",
+      );
+    }
+
+    return node;
+  }
+
   if (oldVNode.children.length === 0 && newVNode.children.length === 1) {
     if (node.childNodes.length !== 0) {
       throw new Error(

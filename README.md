@@ -130,7 +130,8 @@ pnpm test
 
 The current implementation can render an initial Virtual Node tree, add or
 remove an element's only child, replace an incompatible root, and update a
-compatible root text node in place.
+compatible root text node in place. A compatible empty element can also be
+rendered again without replacing or mutating its DOM node.
 
 ```ts
 import { h, render } from "./src";
@@ -168,6 +169,8 @@ names differ, the root is replaced instead. Other child transitions, compatible
 element child updates, DOM property behavior, and event replacement and removal
 are intentionally not supported yet. Compatible text roots retain their DOM
 identity and update only their `Text.data` value.
+Compatible empty element roots with unchanged props are also returned as-is;
+creating a new VNode description does not by itself require a DOM mutation.
 
 ## Project Documents
 
@@ -193,3 +196,5 @@ identity and update only their `Text.data` value.
   DOM identity replacement.
 - `docs/text-node-reconciliation.md`: notes on updating text content without
   replacing the DOM node.
+- `docs/compatible-element-reuse.md`: notes on reusing an element when no DOM
+  change is required.

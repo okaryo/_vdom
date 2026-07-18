@@ -94,4 +94,19 @@ describe("render", () => {
     expect(container.firstChild).toBe(firstNode);
     expect(firstNode.nodeValue).toBe("Loaded");
   });
+
+  it("reuses a compatible empty element without changing the DOM", () => {
+    const firstVNode = h("section", { id: "introduction" }, []);
+    const nextVNode = h("section", { id: "introduction" }, []);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+
+    const nextNode = render(nextVNode, container);
+
+    expect(container.innerHTML).toBe(
+      '<section id="introduction"></section>',
+    );
+    expect(nextNode).toBe(firstNode);
+    expect(container.firstChild).toBe(firstNode);
+  });
 });
