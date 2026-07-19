@@ -143,7 +143,7 @@ const firstVNode = h(
   "ul",
   {
     id: "lessons",
-    class: "pending",
+    className: "pending",
     title: "Loading lessons",
     onClick: handleClick,
   },
@@ -156,7 +156,7 @@ const nextVNode = h(
   "ul",
   {
     id: "lessons",
-    class: "ready",
+    className: "ready",
     "data-state": "complete",
     onClick: handleClick,
   },
@@ -188,11 +188,12 @@ renders, compatible element children at the same index are reconciled
 recursively. New trailing children are mounted, surplus trailing children are
 removed, and incompatible nodes are replaced. Compatible text nodes retain
 their identity and update only `Text.data`. String attributes are added,
-updated, or removed on reused elements. The `value` prop on `input` and
+updated, or removed on reused elements. The renderer maps the VNode prop
+`className` to the HTML attribute `class`. The `value` prop on `input` and
 `textarea` is assigned as a live DOM property and restored from the declarative
 value on later renders. Boolean `checked` on `input` follows the same rule.
-Other DOM property behavior and event replacement and removal are intentionally
-not supported yet.
+Other DOM property behavior, style objects, and event replacement and removal
+are intentionally not supported yet.
 
 ## Project Documents
 
@@ -228,3 +229,5 @@ not supported yet.
   `value` restoration.
 - `docs/checked-property.md`: notes on boolean checked state and explicit prop
   type rules.
+- `docs/class-name-prop.md`: notes on mapping the renderer prop `className` to
+  the HTML attribute `class`.

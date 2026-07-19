@@ -246,4 +246,24 @@ describe("render", () => {
     expect(restoredNode).toBe(firstNode);
     expect(clearedNode).toBe(firstNode);
   });
+
+  it("maps className updates to the class HTML attribute", () => {
+    const firstVNode = h("section", { className: "pending" }, []);
+    const updatedVNode = h("section", { className: "ready" }, []);
+    const withoutClassVNode = h("section", {}, []);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+    const section = container.querySelector("section");
+
+    expect(section?.getAttribute("class")).toBe("pending");
+    expect(section?.hasAttribute("classname")).toBe(false);
+
+    const updatedNode = render(updatedVNode, container);
+    expect(section?.getAttribute("class")).toBe("ready");
+
+    const clearedNode = render(withoutClassVNode, container);
+    expect(section?.hasAttribute("class")).toBe(false);
+    expect(updatedNode).toBe(firstNode);
+    expect(clearedNode).toBe(firstNode);
+  });
 });

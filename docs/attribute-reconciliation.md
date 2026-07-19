@@ -28,6 +28,21 @@ const newProps = {
 This changes `id`, removes `title`, and adds `data-state` without replacing the
 element.
 
+## Prop Names Can Map To Different Attribute Names
+
+The renderer-facing prop name and the browser attribute name do not always have
+to be identical. `className` is translated to `class` before calling
+`setAttribute` or `removeAttribute`:
+
+```ts
+h("section", { className: "ready" }, []);
+// <section class="ready"></section>
+```
+
+This mapping applies during initial mounting, updating, and removal. Supplying
+both `class` and `className` is rejected because both names would target the
+same attribute and make the result depend on mutation order.
+
 ## Why Both Prop Sets Are Needed
 
 Iterating only over new props can find additions and changed values, but it
@@ -49,8 +64,9 @@ an error until listener reconciliation can deliberately call
 
 ## Attributes Are Not General DOM Properties
 
-Most current string props use `setAttribute` and `removeAttribute`. The `value`
-prop on `input` and `textarea` is now an explicit exception: it is assigned as a
-live JavaScript property. Boolean `checked` on `input` is another exception.
-Attributes describe markup state, while DOM properties can represent changing
-runtime state with different value types and behavior.
+Most current string props use `setAttribute` and `removeAttribute`, after the
+`className`-to-`class` name mapping. The `value` prop on `input` and `textarea`
+is an explicit exception: it is assigned as a live JavaScript property. Boolean
+`checked` on `input` is another exception. Attributes describe markup state,
+while DOM properties can represent changing runtime state with different value
+types and behavior.

@@ -28,10 +28,20 @@ function usesCheckedProperty(
   return propName === "checked" && element instanceof HTMLInputElement;
 }
 
+function attributeNameFromPropName(propName: string): string {
+  return propName === "className" ? "class" : propName;
+}
+
 function validateManagedPropTypes(
   props: ElementProps,
   element: Element,
 ): void {
+  if (Object.hasOwn(props, "class") && Object.hasOwn(props, "className")) {
+    throw new TypeError(
+      'Use either "class" or "className", not both on the same element.',
+    );
+  }
+
   for (const [name, value] of Object.entries(props)) {
     if (usesValueProperty(name, element) && typeof value !== "string") {
       throw new TypeError(
@@ -77,7 +87,7 @@ export function applyInitialElementProps(
       throw new TypeError(`Unsupported prop "${name}".`);
     }
 
-    element.setAttribute(name, value);
+    element.setAttribute(attributeNameFromPropName(name), value);
   }
 }
 
@@ -156,7 +166,7 @@ export function updateElementProps(
       !usesCheckedProperty(name, element) &&
       !Object.hasOwn(newProps, name)
     ) {
-      element.removeAttribute(name);
+      element.removeAttribute(attributeNameFromPropName(name));
     }
   }
 
@@ -167,7 +177,7 @@ export function updateElementProps(
       !usesCheckedProperty(name, element) &&
       (!Object.hasOwn(oldProps, name) || oldProps[name] !== newValue)
     ) {
-      element.setAttribute(name, newValue);
+      element.setAttribute(attributeNameFromPropName(name), newValue);
     }
   }
 }

@@ -167,7 +167,8 @@ Questions to answer:
 - [x] Add, update, and remove selected common DOM properties (`value`,
   `checked`).
 - [x] Define the initial attribute rule: string props use `setAttribute`.
-- [ ] Update class and style values.
+- [x] Map the `className` prop to the `class` HTML attribute.
+- [ ] Update style object values.
 - [ ] Replace and remove event listeners without accumulating handlers.
 - [x] Cover controlled form properties such as `value` if useful.
 - [ ] Document intentionally unsupported DOM edge cases.
@@ -188,6 +189,10 @@ Current learning unit:
   value; omitting a previously controlled prop resets it to `false`.
 - Boolean props are rejected unless the renderer has an explicit DOM property
   rule for that name and element type.
+- The renderer maps the VNode prop name `className` to the HTML attribute name
+  `class` during mounting, updating, and removal.
+- Supplying both `class` and `className` on one VNode is rejected because both
+  names target the same DOM attribute and would make precedence ambiguous.
 
 Questions to answer:
 

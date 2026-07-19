@@ -54,6 +54,24 @@ describe("mount", () => {
     expect(element?.getAttribute("data-topic")).toBe("virtual-dom");
   });
 
+  it("rejects class and className on the same element", () => {
+    const vnode: ElementVNode = {
+      type: "element",
+      tagName: "section",
+      props: {
+        class: "first",
+        className: "second",
+      },
+      children: [],
+    };
+    const container = document.createElement("div");
+
+    expect(() => mount(vnode, container)).toThrow(
+      'Use either "class" or "className", not both on the same element.',
+    );
+    expect(container.childNodes).toHaveLength(0);
+  });
+
   it("attaches function props as event listeners", () => {
     const handleClick = vi.fn();
     const vnode: ElementVNode = {

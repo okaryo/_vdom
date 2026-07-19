@@ -23,8 +23,9 @@ type ElementProps = Record<string, ElementProp>;
 ```
 
 During mounting, each string entry is applied with
-`element.setAttribute(name, value)`. Each function entry must use an
-`on<Event>` name and is attached with `element.addEventListener`.
+`element.setAttribute(attributeName, value)`. Most prop names are used directly
+as attribute names, while `className` maps to `class`. Each function entry must
+use an `on<Event>` name and is attached with `element.addEventListener`.
 
 ## Renderer Input Versus DOM Properties
 
@@ -33,8 +34,9 @@ every entry is immediately assigned as a JavaScript property on the real DOM
 object. The renderer decides how each kind of prop reaches the browser.
 
 String props are treated as HTML attributes. That works clearly for values such
-as `id`, `class`, and `data-*`, but it is not a complete DOM update model. DOM
-properties and HTML attributes can differ in name, type, and current value.
+as `id` and `data-*`, while the renderer explicitly maps `className` to the
+`class` attribute. It is not a complete DOM update model: DOM properties and
+HTML attributes can differ in name, type, and current value.
 
 Function props use an `on<Event>` name and are attached with
 `addEventListener`. For example, `onClick` becomes the `click` event type. This
@@ -60,4 +62,6 @@ Props cannot yet contain numbers, objects, or removal instructions. Boolean
 values are currently valid only for `checked` on `input`. Event names are
 derived by removing `on` and lowercasing the remaining prop name, so custom
 event names with meaningful casing are not represented. Event handlers cannot
-yet be added, replaced, or removed during reconciliation.
+yet be added, replaced, or removed during reconciliation. Style objects are not
+supported yet. `class` remains accepted as a direct attribute name, but using it
+together with `className` on the same VNode is rejected.
