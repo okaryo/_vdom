@@ -190,8 +190,9 @@ removed, and incompatible nodes are replaced. Compatible text nodes retain
 their identity and update only `Text.data`. String attributes are added,
 updated, or removed on reused elements. The `value` prop on `input` and
 `textarea` is assigned as a live DOM property and restored from the declarative
-value on later renders. Other DOM property behavior and event replacement and
-removal are intentionally not supported yet.
+value on later renders. Boolean `checked` on `input` follows the same rule.
+Other DOM property behavior and event replacement and removal are intentionally
+not supported yet.
 
 ## Project Documents
 
@@ -225,3 +226,5 @@ removal are intentionally not supported yet.
   update, and removal.
 - `docs/controlled-value-property.md`: notes on live form state and declarative
   `value` restoration.
+- `docs/checked-property.md`: notes on boolean checked state and explicit prop
+  type rules.

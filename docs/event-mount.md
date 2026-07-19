@@ -10,6 +10,8 @@ During mounting, the renderer distinguishes the prop by its value type:
 
 - A string value is normally applied with `setAttribute`; `value` on `input`
   and `textarea` is assigned as a DOM property.
+- Boolean `checked` on `input` is assigned as a DOM property; other boolean
+  props are rejected until explicitly supported.
 - A function value is attached with `addEventListener`.
 
 The event type is derived by removing `on` and lowercasing the remainder, so

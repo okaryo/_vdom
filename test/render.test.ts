@@ -218,4 +218,32 @@ describe("render", () => {
     expect(restoredNode).toBe(firstNode);
     expect(clearedNode).toBe(firstNode);
   });
+
+  it("sets, restores, and clears an input checked DOM property", () => {
+    const firstVNode = h("input", { checked: false }, []);
+    const checkedVNode = h("input", { checked: true }, []);
+    const withoutCheckedVNode = h("input", {}, []);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+    const input = container.querySelector("input");
+
+    expect(input?.checked).toBe(false);
+    expect(input?.hasAttribute("checked")).toBe(false);
+
+    const checkedNode = render(checkedVNode, container);
+    expect(input?.checked).toBe(true);
+
+    if (input !== null) {
+      input.checked = false;
+    }
+
+    const restoredNode = render(checkedVNode, container);
+    expect(input?.checked).toBe(true);
+
+    const clearedNode = render(withoutCheckedVNode, container);
+    expect(input?.checked).toBe(false);
+    expect(checkedNode).toBe(firstNode);
+    expect(restoredNode).toBe(firstNode);
+    expect(clearedNode).toBe(firstNode);
+  });
 });

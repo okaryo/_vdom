@@ -77,6 +77,23 @@ describe("mount", () => {
     expect(button?.hasAttribute("onclick")).toBe(false);
   });
 
+  it("rejects boolean props without an explicit DOM property rule", () => {
+    const vnode: ElementVNode = {
+      type: "element",
+      tagName: "div",
+      props: {
+        hidden: true,
+      },
+      children: [],
+    };
+    const container = document.createElement("div");
+
+    expect(() => mount(vnode, container)).toThrow(
+      'Boolean prop "hidden" is not supported on div.',
+    );
+    expect(container.childNodes).toHaveLength(0);
+  });
+
   it("rejects a function prop without an on<Event> name", () => {
     const invalidHandler = vi.fn<(event: Event) => void>();
     const vnode: ElementVNode = {

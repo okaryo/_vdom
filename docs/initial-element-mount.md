@@ -39,8 +39,8 @@ VNode and returned DOM node for each container, ready for reconciliation.
 
 ## Current Limitations
 
-The renderer supports string-valued props as HTML attributes, `value` on
-`input` and `textarea` as a DOM property, and function props as event listeners,
+The renderer supports string-valued props as HTML attributes, `value` and
+`checked` as selected DOM properties, and function props as event listeners,
 but not general DOM property behavior. Direct `mount` calls always create a new
 DOM node. `render` compares subsequent trees with retained output, although
 listeners cannot yet be replaced or removed during an update. Text node support

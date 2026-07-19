@@ -164,7 +164,8 @@ Questions to answer:
 ### 4. Properties, Styles, And Events
 
 - [x] Add, update, and remove string-valued HTML attributes.
-- [ ] Add, update, and remove common DOM properties.
+- [x] Add, update, and remove selected common DOM properties (`value`,
+  `checked`).
 - [x] Define the initial attribute rule: string props use `setAttribute`.
 - [ ] Update class and style values.
 - [ ] Replace and remove event listeners without accumulating handlers.
@@ -183,6 +184,10 @@ Current learning unit:
   than serialized as an attribute.
 - A controlled `value` is compared with the real DOM value on every render, so
   user edits are restored even when old and new VNode values are equal.
+- `checked` on `input` follows the same controlled-property rule with a boolean
+  value; omitting a previously controlled prop resets it to `false`.
+- Boolean props are rejected unless the renderer has an explicit DOM property
+  rule for that name and element type.
 
 Questions to answer:
 

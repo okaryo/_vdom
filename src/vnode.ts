@@ -1,6 +1,6 @@
 export type EventHandler = (event: Event) => void;
 
-export type ElementProp = string | EventHandler;
+export type ElementProp = string | boolean | EventHandler;
 
 export type ElementProps = Record<string, ElementProp>;
 

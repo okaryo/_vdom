@@ -53,6 +53,7 @@ neither VNode has the prop, the renderer leaves the live value alone.
 
 ## Current Scope
 
-Only string `value` on `input` and `textarea` is special-cased. Select elements,
-`checked`, `selected`, numeric values, cursor selection behavior, and framework
+Only string `value` on `input` and `textarea` is covered by this rule. Select
+elements, `selected`, numeric values, cursor selection behavior, and framework
 warnings for controlled/uncontrolled transitions remain outside this step.
+Boolean `checked` is now handled separately for `input` elements.

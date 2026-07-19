@@ -18,7 +18,7 @@ The representation remains intentionally narrow:
 
 ```ts
 type EventHandler = (event: Event) => void;
-type ElementProp = string | EventHandler;
+type ElementProp = string | boolean | EventHandler;
 type ElementProps = Record<string, ElementProp>;
 ```
 
@@ -50,9 +50,14 @@ The first DOM property exception is `value` on `input` and `textarea`. It is
 assigned to the element's live `value` property during both mounting and
 reconciliation instead of becoming an HTML attribute.
 
+The second exception is boolean `checked` on `input`. Other boolean props are
+rejected until they receive an explicit renderer rule; they are not implicitly
+stringified as attributes.
+
 ## Current Limitations
 
-Props cannot yet contain booleans, numbers, objects, or removal instructions.
-Event names are derived by removing `on` and lowercasing the remaining prop
-name, so custom event names with meaningful casing are not represented. Event
-handlers cannot yet be added, replaced, or removed during reconciliation.
+Props cannot yet contain numbers, objects, or removal instructions. Boolean
+values are currently valid only for `checked` on `input`. Event names are
+derived by removing `on` and lowercasing the remaining prop name, so custom
+event names with meaningful casing are not represented. Event handlers cannot
+yet be added, replaced, or removed during reconciliation.
