@@ -46,6 +46,10 @@ introduce explicit branches for DOM properties and styles, then compare old and
 new event props to replace or remove listeners. Keeping these behaviors
 incremental makes each DOM operation independently observable.
 
+The first DOM property exception is `value` on `input` and `textarea`. It is
+assigned to the element's live `value` property during both mounting and
+reconciliation instead of becoming an HTML attribute.
+
 ## Current Limitations
 
 Props cannot yet contain booleans, numbers, objects, or removal instructions.

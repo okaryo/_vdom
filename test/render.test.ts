@@ -190,4 +190,32 @@ describe("render", () => {
     expect(button?.hasAttribute("title")).toBe(false);
     expect(handleClick).toHaveBeenCalledOnce();
   });
+
+  it("sets, restores, and clears an input value DOM property", () => {
+    const firstVNode = h("input", { value: "initial" }, []);
+    const updatedVNode = h("input", { value: "updated" }, []);
+    const withoutValueVNode = h("input", {}, []);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+    const input = container.querySelector("input");
+
+    expect(input?.value).toBe("initial");
+    expect(input?.hasAttribute("value")).toBe(false);
+
+    const updatedNode = render(updatedVNode, container);
+    expect(input?.value).toBe("updated");
+
+    if (input !== null) {
+      input.value = "user edit";
+    }
+
+    const restoredNode = render(updatedVNode, container);
+    expect(input?.value).toBe("updated");
+
+    const clearedNode = render(withoutValueVNode, container);
+    expect(input?.value).toBe("");
+    expect(updatedNode).toBe(firstNode);
+    expect(restoredNode).toBe(firstNode);
+    expect(clearedNode).toBe(firstNode);
+  });
 });

@@ -188,8 +188,10 @@ renders, compatible element children at the same index are reconciled
 recursively. New trailing children are mounted, surplus trailing children are
 removed, and incompatible nodes are replaced. Compatible text nodes retain
 their identity and update only `Text.data`. String attributes are added,
-updated, or removed on reused elements. General DOM property behavior and event
-replacement and removal are intentionally not supported yet.
+updated, or removed on reused elements. The `value` prop on `input` and
+`textarea` is assigned as a live DOM property and restored from the declarative
+value on later renders. Other DOM property behavior and event replacement and
+removal are intentionally not supported yet.
 
 ## Project Documents
 
@@ -221,3 +223,5 @@ replacement and removal are intentionally not supported yet.
   matching and its identity tradeoffs.
 - `docs/attribute-reconciliation.md`: notes on string attribute addition,
   update, and removal.
+- `docs/controlled-value-property.md`: notes on live form state and declarative
+  `value` restoration.

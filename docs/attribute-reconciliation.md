@@ -49,7 +49,8 @@ an error until listener reconciliation can deliberately call
 
 ## Attributes Are Not General DOM Properties
 
-This step intentionally uses `setAttribute` and `removeAttribute`. It does not
-yet assign JavaScript properties such as an input element's live `value`.
-Attributes describe markup state, while DOM properties can represent changing
-runtime state with different value types and behavior.
+Most current string props use `setAttribute` and `removeAttribute`. The `value`
+prop on `input` and `textarea` is now an explicit exception: it is assigned as a
+live JavaScript property. Attributes describe markup state, while DOM
+properties can represent changing runtime state with different value types and
+behavior.

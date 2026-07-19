@@ -8,7 +8,8 @@ const vnode = h("button", { onClick: handleClick }, ["Save"]);
 
 During mounting, the renderer distinguishes the prop by its value type:
 
-- A string value is applied with `setAttribute`.
+- A string value is normally applied with `setAttribute`; `value` on `input`
+  and `textarea` is assigned as a DOM property.
 - A function value is attached with `addEventListener`.
 
 The event type is derived by removing `on` and lowercasing the remainder, so

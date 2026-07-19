@@ -1,5 +1,45 @@
 import type { ElementProps } from "./vnode";
 
+function eventTypeFromPropName(propName: string): string {
+  if (!propName.startsWith("on") || propName.length === 2) {
+    throw new TypeError(
+      `Event handler prop "${propName}" must start with "on" followed by an event name.`,
+    );
+  }
+
+  return propName.slice(2).toLowerCase();
+}
+
+function usesValueProperty(
+  propName: string,
+  element: Element,
+): element is HTMLInputElement | HTMLTextAreaElement {
+  return (
+    propName === "value" &&
+    (element instanceof HTMLInputElement ||
+      element instanceof HTMLTextAreaElement)
+  );
+}
+
+export function applyInitialElementProps(
+  props: ElementProps,
+  element: Element,
+): void {
+  for (const [name, value] of Object.entries(props)) {
+    if (typeof value === "function") {
+      element.addEventListener(eventTypeFromPropName(name), value);
+      continue;
+    }
+
+    if (usesValueProperty(name, element)) {
+      element.value = value;
+      continue;
+    }
+
+    element.setAttribute(name, value);
+  }
+}
+
 function validateEventPropsAreUnchanged(
   oldProps: ElementProps,
   newProps: ElementProps,
@@ -35,8 +75,29 @@ export function updateElementProps(
 ): void {
   validateEventPropsAreUnchanged(oldProps, newProps);
 
+  if (
+    element instanceof HTMLInputElement ||
+    element instanceof HTMLTextAreaElement
+  ) {
+    const hasOldValue = Object.hasOwn(oldProps, "value");
+    const hasNewValue = Object.hasOwn(newProps, "value");
+    const newValue = newProps.value;
+
+    if (hasNewValue && typeof newValue === "string") {
+      if (element.value !== newValue) {
+        element.value = newValue;
+      }
+    } else if (hasOldValue && !hasNewValue && element.value !== "") {
+      element.value = "";
+    }
+  }
+
   for (const [name, oldValue] of Object.entries(oldProps)) {
-    if (typeof oldValue === "string" && !Object.hasOwn(newProps, name)) {
+    if (
+      typeof oldValue === "string" &&
+      !usesValueProperty(name, element) &&
+      !Object.hasOwn(newProps, name)
+    ) {
       element.removeAttribute(name);
     }
   }
@@ -44,6 +105,7 @@ export function updateElementProps(
   for (const [name, newValue] of Object.entries(newProps)) {
     if (
       typeof newValue === "string" &&
+      !usesValueProperty(name, element) &&
       (!Object.hasOwn(oldProps, name) || oldProps[name] !== newValue)
     ) {
       element.setAttribute(name, newValue);

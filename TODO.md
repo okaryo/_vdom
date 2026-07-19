@@ -168,7 +168,7 @@ Questions to answer:
 - [x] Define the initial attribute rule: string props use `setAttribute`.
 - [ ] Update class and style values.
 - [ ] Replace and remove event listeners without accumulating handlers.
-- [ ] Cover controlled form properties such as `value` if useful.
+- [x] Cover controlled form properties such as `value` if useful.
 - [ ] Document intentionally unsupported DOM edge cases.
 
 Current learning unit:
@@ -179,6 +179,10 @@ Current learning unit:
   use `setAttribute`; unchanged values produce no attribute write.
 - Event handlers must remain the same function reference until listener
   replacement and removal are implemented separately.
+- `value` on `input` and `textarea` is assigned as a live DOM property rather
+  than serialized as an attribute.
+- A controlled `value` is compared with the real DOM value on every render, so
+  user edits are restored even when old and new VNode values are equal.
 
 Questions to answer:
 

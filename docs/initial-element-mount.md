@@ -39,10 +39,10 @@ VNode and returned DOM node for each container, ready for reconciliation.
 
 ## Current Limitations
 
-The renderer supports string-valued props as HTML attributes and function props
-as event listeners, but not general DOM property behavior. Direct `mount` calls
-always create a new DOM node. `render` prevents a second render from mutating the
-same container until comparison with the retained output is implemented, so
+The renderer supports string-valued props as HTML attributes, `value` on
+`input` and `textarea` as a DOM property, and function props as event listeners,
+but not general DOM property behavior. Direct `mount` calls always create a new
+DOM node. `render` compares subsequent trees with retained output, although
 listeners cannot yet be replaced or removed during an update. Text node support
 is described in `text-node-mount.md`, and recursive element children are
 described in `nested-children.md`.
