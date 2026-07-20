@@ -21,12 +21,13 @@ Initial focus:
 
 ## Core Milestone Status
 
-Core milestone not complete.
+Core milestone complete.
 
-The first core milestone is a synchronous browser renderer that can mount an
-explicit Virtual Node tree, reconcile a second tree positionally, update basic
-DOM properties and events, and demonstrate through tests or examples which real
-DOM nodes were reused.
+The synchronous browser renderer can mount an explicit Virtual Node tree,
+reconcile a second tree positionally, update basic DOM properties and events,
+and demonstrate through tests which real DOM nodes were reused. Sections 0
+through 4 establish this completed foundation; components and state now build
+on it as later learning stages.
 
 ## Roadmap
 
@@ -171,7 +172,7 @@ Questions to answer:
 - [x] Update style object values.
 - [x] Replace and remove event listeners without accumulating handlers.
 - [x] Cover controlled form properties such as `value` if useful.
-- [ ] Document intentionally unsupported DOM edge cases.
+- [x] Document intentionally unsupported DOM edge cases.
 
 Current learning unit:
 
@@ -206,6 +207,12 @@ Current learning unit:
   empty style object, so every previously managed declaration is removed.
 - Numeric style values and automatic unit conversion remain intentionally
   unsupported.
+- `docs/dom-boundaries-and-limitations.md` records the current renderer's
+  deliberate boundaries around HTML namespaces, externally mutated DOM,
+  element-local listener cleanup, prop coverage, and non-transactional updates.
+- Removing or replacing a subtree does not traverse it to detach element-local
+  listeners. An unreachable node and its listener can be garbage-collected,
+  while a detached node retained by external code keeps its listener.
 
 Questions to answer:
 

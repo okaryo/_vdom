@@ -66,9 +66,8 @@ Virtual DOM renderers behave.
 
 ## Core Milestone
 
-The core learning milestone is not complete yet.
-
-The first core target is to build a tiny browser renderer that can:
+The first core learning milestone is complete. The current tiny browser
+renderer can:
 
 - Create explicit Virtual Nodes for elements and text.
 - Mount a Virtual Node tree into a DOM container.
@@ -240,3 +239,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   the HTML attribute `class`.
 - `docs/style-prop.md`: notes on applying and reconciling individual entries in
   a style object.
+- `docs/dom-boundaries-and-limitations.md`: the current supported DOM boundary
+  and intentionally unsupported browser and lifecycle cases.
