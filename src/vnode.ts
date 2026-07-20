@@ -20,6 +20,8 @@ export type TextVNode = {
 
 export type VNode = ElementVNode | TextVNode;
 
+export type FunctionComponent = () => VNode;
+
 export type VNodeChild =
   | VNode
   | string
@@ -64,11 +66,39 @@ export function h(
   tagName: string,
   props: ElementProps,
   children: VNodeChild[],
-): ElementVNode {
+): ElementVNode;
+export function h(
+  component: FunctionComponent,
+  props: ElementProps,
+  children: VNodeChild[],
+): VNode;
+export function h(
+  type: string | FunctionComponent,
+  props: ElementProps,
+  children: VNodeChild[],
+): VNode {
+  const normalizedChildren = normalizeChildren(children);
+
+  if (typeof type === "function") {
+    if (Object.keys(props).length > 0) {
+      throw new TypeError(
+        "Function component props are not supported yet.",
+      );
+    }
+
+    if (normalizedChildren.length > 0) {
+      throw new TypeError(
+        "Function component children are not supported yet.",
+      );
+    }
+
+    return type();
+  }
+
   return {
     type: "element",
-    tagName,
+    tagName: type,
     props,
-    children: normalizeChildren(children),
+    children: normalizedChildren,
   };
 }

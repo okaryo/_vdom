@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { h, type TextVNode } from "../src";
+import { h, type FunctionComponent, type TextVNode } from "../src";
 
 describe("h", () => {
   afterEach(() => {
@@ -63,5 +63,34 @@ describe("h", () => {
       child,
     ]);
     expect(vnode.children[2]).toBe(child);
+  });
+
+  it("eagerly evaluates a function component into its returned VNode", () => {
+    const component: FunctionComponent = vi.fn(() =>
+      h("p", { className: "message" }, ["Hello"]),
+    );
+    const createElement = vi.spyOn(document, "createElement");
+
+    const vnode = h(component, {}, []);
+
+    expect(component).toHaveBeenCalledOnce();
+    expect(vnode).toEqual({
+      type: "element",
+      tagName: "p",
+      props: { className: "message" },
+      children: [{ type: "text", value: "Hello" }],
+    });
+    expect(createElement).not.toHaveBeenCalled();
+  });
+
+  it("rejects function component inputs until props and children are supported", () => {
+    const component: FunctionComponent = () => h("p", {}, []);
+
+    expect(() => h(component, { id: "message" }, [])).toThrow(
+      "Function component props are not supported yet.",
+    );
+    expect(() => h(component, {}, ["child"])).toThrow(
+      "Function component children are not supported yet.",
+    );
   });
 });

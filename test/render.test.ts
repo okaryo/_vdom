@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { h, render, type TextVNode } from "../src";
+import {
+  h,
+  render,
+  type FunctionComponent,
+  type TextVNode,
+} from "../src";
 
 describe("render", () => {
   it("mounts and returns the first root DOM node for a container", () => {
@@ -13,6 +18,20 @@ describe("render", () => {
       '<section id="introduction">Virtual DOM</section>',
     );
     expect(container.firstChild).toBe(node);
+  });
+
+  it("renders a function component result without an extra DOM wrapper", () => {
+    const component: FunctionComponent = () =>
+      h("p", { className: "message" }, ["Hello"]);
+    const container = document.createElement("div");
+
+    const node = render(h(component, {}, []), container);
+
+    expect(container.innerHTML).toBe(
+      '<p class="message">Hello</p>',
+    );
+    expect(container.childNodes).toHaveLength(1);
+    expect(node).toBe(container.firstChild);
   });
 
   it("adds the first child while preserving the root DOM node", () => {

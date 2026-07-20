@@ -46,3 +46,18 @@ are positions after normalization. That becomes important when children are
 later reconciled by position.
 
 There are still no default props or variadic children.
+
+## Function Component Overload
+
+`h` now also accepts an input-free `FunctionComponent`:
+
+```ts
+type FunctionComponent = () => VNode;
+
+const Message: FunctionComponent = () => h("p", {}, ["Hello"]);
+const vnode = h(Message, {}, []);
+```
+
+This overload eagerly evaluates `Message` and returns its result. It still does
+not call a browser DOM API. Component props and children are rejected until
+their data flow is introduced explicitly.

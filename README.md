@@ -174,10 +174,13 @@ console.log(firstNode === nextNode); // true
 console.log(firstItem === nextNode.firstChild); // true
 ```
 
-`h` only creates a plain element description and has no DOM side effects. It
-normalizes string and number children into `TextVNode` objects, so `mount`
-continues to receive a canonical `VNode[]`. Nested child arrays are recursively
-flattened, while `null`, `undefined`, and boolean children are omitted. Props
+With a string tag name, `h` only creates a plain element description and has no
+DOM side effects. It normalizes string and number children into `TextVNode`
+objects, so `mount` continues to receive a canonical `VNode[]`. An input-free
+function component can also be passed to `h`; it is evaluated eagerly into the
+ordinary VNode it returns and creates no extra DOM wrapper. Nested child arrays
+are recursively flattened, while `null`, `undefined`, and boolean children are
+omitted. Props
 can contain strings, selected booleans, style objects, or event handler
 functions. During mounting, string props are applied as HTML attributes,
 `style` objects are applied through the live `CSSStyleDeclaration`, and function
@@ -241,3 +244,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   a style object.
 - `docs/dom-boundaries-and-limitations.md`: the current supported DOM boundary
   and intentionally unsupported browser and lifecycle cases.
+- `docs/minimal-function-component.md`: notes on eagerly expanding an
+  input-free function component into an ordinary VNode.
