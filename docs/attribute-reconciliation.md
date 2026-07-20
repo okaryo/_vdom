@@ -57,10 +57,11 @@ The update therefore has two mutation passes after validation:
 ## Event Handlers Remain Separate
 
 Function props are not attributes. Before any string attribute is mutated, the
-update validates that every event handler still exists under the same name with
-the same function reference. Adding, replacing, or removing a handler remains
-an error until listener reconciliation can deliberately call
-`removeEventListener` and `addEventListener`.
+renderer compares event handlers by function reference in their own update
+boundary. A changed old function is passed to `removeEventListener` before the
+new function is passed to `addEventListener`. The old reference is essential
+because removing a listener requires the same function object that was
+originally registered.
 
 ## Attributes Are Not General DOM Properties
 

@@ -304,4 +304,40 @@ describe("render", () => {
     expect(updatedNode).toBe(firstNode);
     expect(clearedNode).toBe(firstNode);
   });
+
+  it("adds, replaces, and removes an event listener without accumulating handlers", () => {
+    const firstHandler = vi.fn<(event: Event) => void>();
+    const secondHandler = vi.fn<(event: Event) => void>();
+    const withoutHandlerVNode = h("button", {}, ["Save"]);
+    const firstHandlerVNode = h(
+      "button",
+      { onClick: firstHandler },
+      ["Save"],
+    );
+    const secondHandlerVNode = h(
+      "button",
+      { onClick: secondHandler },
+      ["Save"],
+    );
+    const container = document.createElement("div");
+    const firstNode = render(withoutHandlerVNode, container);
+    const button = container.querySelector("button");
+
+    const addedNode = render(firstHandlerVNode, container);
+    button?.dispatchEvent(new MouseEvent("click"));
+    expect(firstHandler).toHaveBeenCalledOnce();
+
+    const replacedNode = render(secondHandlerVNode, container);
+    button?.dispatchEvent(new MouseEvent("click"));
+    expect(firstHandler).toHaveBeenCalledOnce();
+    expect(secondHandler).toHaveBeenCalledOnce();
+
+    const removedNode = render(withoutHandlerVNode, container);
+    button?.dispatchEvent(new MouseEvent("click"));
+    expect(firstHandler).toHaveBeenCalledOnce();
+    expect(secondHandler).toHaveBeenCalledOnce();
+    expect(addedNode).toBe(firstNode);
+    expect(replacedNode).toBe(firstNode);
+    expect(removedNode).toBe(firstNode);
+  });
 });

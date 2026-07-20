@@ -35,5 +35,5 @@ no-child-mutation path, and elements with children reconcile those children
 recursively by position. String attribute differences are now updated on the
 same element before its children are reconciled.
 
-Event listener changes and general DOM properties still need their own update
-behavior.
+Selected DOM properties, styles, and event listener changes are also updated on
+the reused element. General DOM property behavior remains deliberately limited.

@@ -42,7 +42,7 @@ VNode and returned DOM node for each container, ready for reconciliation.
 The renderer supports string-valued props as HTML attributes, `value` and
 `checked` as selected DOM properties, and function props as event listeners,
 but not general DOM property behavior. Direct `mount` calls always create a new
-DOM node. `render` compares subsequent trees with retained output, although
-listeners cannot yet be replaced or removed during an update. Text node support
-is described in `text-node-mount.md`, and recursive element children are
-described in `nested-children.md`.
+DOM node. `render` compares subsequent trees with retained output and can
+replace or remove listeners on reused elements. Text node support is described
+in `text-node-mount.md`, and recursive element children are described in
+`nested-children.md`.

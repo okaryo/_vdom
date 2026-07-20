@@ -196,8 +196,9 @@ updated, or removed on reused elements. The renderer maps the VNode prop
 value on later renders. Boolean `checked` on `input` follows the same rule.
 Style objects use camelCase CSS names and string values; their declarations are
 added, updated, or removed individually. Numeric style values, other DOM
-property behavior, and event replacement and removal are intentionally not
-supported yet.
+property behavior, listener options, and framework-specific synthetic event
+semantics are intentionally not supported yet. Event handler functions are
+added, replaced, or removed without accumulating listeners on reused elements.
 
 ## Project Documents
 
@@ -214,6 +215,8 @@ supported yet.
 - `docs/element-props.md`: notes on initial string props and HTML attributes.
 - `docs/h-function.md`: notes on the pure Virtual Node creation boundary.
 - `docs/event-mount.md`: notes on initial event listener attachment.
+- `docs/event-listener-reconciliation.md`: notes on adding, replacing, and
+  removing listeners while reusing an element.
 - `docs/render-root-state.md`: notes on container-level retained render state.
 - `docs/first-child-reconciliation.md`: notes on the first incremental DOM
   update and root identity reuse.

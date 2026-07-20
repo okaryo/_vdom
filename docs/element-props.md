@@ -43,11 +43,11 @@ Function props use an `on<Event>` name and are attached with
 `addEventListener`. For example, `onClick` becomes the `click` event type. This
 keeps listener registration distinct from attribute serialization.
 
-During reconciliation, string props are now compared by name. Missing values
-remove attributes, while new or changed values set attributes. Later steps can
-introduce explicit branches for DOM properties and styles, then compare old and
-new event props to replace or remove listeners. Keeping these behaviors
-incremental makes each DOM operation independently observable.
+During reconciliation, string props are compared by name. Missing values remove
+attributes, while new or changed values set attributes. Style entries are
+compared individually, and old and new event functions are compared by
+reference. Keeping these behaviors in separate boundaries makes each DOM
+operation independently observable.
 
 The first DOM property exception is `value` on `input` and `textarea`. It is
 assigned to the element's live `value` property during both mounting and
@@ -67,6 +67,6 @@ Props cannot yet contain numbers or arbitrary objects; the `style` object is the
 only object-valued exception. Boolean values are currently valid only for
 `checked` on `input`. Event names are derived by removing `on` and lowercasing
 the remaining prop name, so custom event names with meaningful casing are not
-represented. Event handlers cannot yet be added, replaced, or removed during
-reconciliation. `class` remains accepted as a direct attribute name, but using
-it together with `className` on the same VNode is rejected.
+represented. Listener options and multiple handlers for one prop are not
+supported. `class` remains accepted as a direct attribute name, but using it
+together with `className` on the same VNode is rejected.

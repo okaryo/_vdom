@@ -117,6 +117,11 @@ function validateManagedPropTypes(
       throw new TypeError(`Object prop "${name}" is not supported.`);
     }
 
+    if (typeof value === "function") {
+      eventTypeFromPropName(name);
+      continue;
+    }
+
     if (usesValueProperty(name, element) && typeof value !== "string") {
       throw new TypeError(
         `The "value" prop on ${element.tagName.toLowerCase()} must be a string.`,
@@ -170,9 +175,10 @@ export function applyInitialElementProps(
   }
 }
 
-function validateEventPropsAreUnchanged(
+function updateEventProps(
   oldProps: ElementProps,
   newProps: ElementProps,
+  element: Element,
 ): void {
   const names = new Set([
     ...Object.keys(oldProps),
@@ -180,20 +186,29 @@ function validateEventPropsAreUnchanged(
   ]);
 
   for (const name of names) {
-    const hasOldValue = Object.hasOwn(oldProps, name);
-    const hasNewValue = Object.hasOwn(newProps, name);
     const oldValue = oldProps[name];
     const newValue = newProps[name];
-    const hasOldHandler = hasOldValue && typeof oldValue === "function";
-    const hasNewHandler = hasNewValue && typeof newValue === "function";
+    const oldHandler = typeof oldValue === "function" ? oldValue : undefined;
+    const newHandler = typeof newValue === "function" ? newValue : undefined;
 
-    if (
-      (hasOldHandler || hasNewHandler) &&
-      (!hasOldValue || !hasNewValue || oldValue !== newValue)
-    ) {
-      throw new Error(
-        "Adding, replacing, or removing event handlers during reconciliation is not supported yet.",
-      );
+    if (oldHandler === newHandler) {
+      continue;
+    }
+
+    const handler = oldHandler ?? newHandler;
+
+    if (handler === undefined) {
+      continue;
+    }
+
+    const eventType = eventTypeFromPropName(name);
+
+    if (oldHandler !== undefined) {
+      element.removeEventListener(eventType, oldHandler);
+    }
+
+    if (newHandler !== undefined) {
+      element.addEventListener(eventType, newHandler);
     }
   }
 }
@@ -205,7 +220,7 @@ export function updateElementProps(
 ): void {
   validateManagedPropTypes(oldProps, element);
   validateManagedPropTypes(newProps, element);
-  validateEventPropsAreUnchanged(oldProps, newProps);
+  updateEventProps(oldProps, newProps, element);
 
   const oldStyleValue = oldProps.style;
   const newStyleValue = newProps.style;
@@ -255,7 +270,8 @@ export function updateElementProps(
       typeof oldValue === "string" &&
       !usesValueProperty(name, element) &&
       !usesCheckedProperty(name, element) &&
-      !Object.hasOwn(newProps, name)
+      (!Object.hasOwn(newProps, name) ||
+        typeof newProps[name] !== "string")
     ) {
       element.removeAttribute(attributeNameFromPropName(name));
     }
@@ -266,7 +282,7 @@ export function updateElementProps(
       typeof newValue === "string" &&
       !usesValueProperty(name, element) &&
       !usesCheckedProperty(name, element) &&
-      (!Object.hasOwn(oldProps, name) || oldProps[name] !== newValue)
+      (typeof oldProps[name] !== "string" || oldProps[name] !== newValue)
     ) {
       element.setAttribute(attributeNameFromPropName(name), newValue);
     }

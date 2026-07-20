@@ -26,14 +26,13 @@ function registered with the browser's event system. Passing a function to
 `setAttribute` would stringify it rather than subscribe it to an event.
 
 The listener remains stored in the Virtual Node props as well as in the
-browser's event-target listener list. Once reconciliation retains old and new
-trees, the old function reference can be used with `removeEventListener` before
-a changed handler is attached. Initial mounting has no old handler, so this
-learning unit only performs attachment.
+browser's event-target listener list. Reconciliation uses the old function
+reference with `removeEventListener` before a changed handler is attached.
+Initial mounting has no old handler, so it only performs attachment.
 
 ## Current Simplifications
 
 The renderer does not support listener options, event-handler objects, multiple
 handlers for one prop, or custom event names whose casing must be preserved.
-Listener replacement and removal are intentionally deferred until update-time
-prop comparison exists.
+React-style synthetic event behavior is also outside this renderer's current
+scope.

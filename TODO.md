@@ -169,7 +169,7 @@ Questions to answer:
 - [x] Define the initial attribute rule: string props use `setAttribute`.
 - [x] Map the `className` prop to the `class` HTML attribute.
 - [x] Update style object values.
-- [ ] Replace and remove event listeners without accumulating handlers.
+- [x] Replace and remove event listeners without accumulating handlers.
 - [x] Cover controlled form properties such as `value` if useful.
 - [ ] Document intentionally unsupported DOM edge cases.
 
@@ -179,8 +179,13 @@ Current learning unit:
   being mixed into child reconciliation.
 - Missing old string props use `removeAttribute`; new or changed string props
   use `setAttribute`; unchanged values produce no attribute write.
-- Event handlers must remain the same function reference until listener
-  replacement and removal are implemented separately.
+- Event props are compared by function reference. An old handler is removed
+  before a different new handler is attached; an unchanged reference produces
+  no listener operation.
+- The retained old VNode already stores the function reference required by
+  `removeEventListener`, so this implementation does not need a separate event
+  handler registry.
+- Adding and removing a handler are the same comparison with one side missing.
 - `value` on `input` and `textarea` is assigned as a live DOM property rather
   than serialized as an attribute.
 - A controlled `value` is compared with the real DOM value on every render, so
