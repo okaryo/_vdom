@@ -6,6 +6,7 @@ export type {
   ElementProps,
   ElementVNode,
   EventHandler,
+  StyleProps,
   TextVNode,
   VNode,
   VNodeChild,

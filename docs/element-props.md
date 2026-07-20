@@ -18,7 +18,8 @@ The representation remains intentionally narrow:
 
 ```ts
 type EventHandler = (event: Event) => void;
-type ElementProp = string | boolean | EventHandler;
+type StyleProps = Record<string, string>;
+type ElementProp = string | boolean | EventHandler | StyleProps;
 type ElementProps = Record<string, ElementProp>;
 ```
 
@@ -56,12 +57,16 @@ The second exception is boolean `checked` on `input`. Other boolean props are
 rejected until they receive an explicit renderer rule; they are not implicitly
 stringified as attributes.
 
+The third exception is `style`, which accepts an object of camelCase CSS
+property names and string values. Its entries are applied to the element's live
+`style` declaration and compared individually during reconciliation.
+
 ## Current Limitations
 
-Props cannot yet contain numbers, objects, or removal instructions. Boolean
-values are currently valid only for `checked` on `input`. Event names are
-derived by removing `on` and lowercasing the remaining prop name, so custom
-event names with meaningful casing are not represented. Event handlers cannot
-yet be added, replaced, or removed during reconciliation. Style objects are not
-supported yet. `class` remains accepted as a direct attribute name, but using it
-together with `className` on the same VNode is rejected.
+Props cannot yet contain numbers or arbitrary objects; the `style` object is the
+only object-valued exception. Boolean values are currently valid only for
+`checked` on `input`. Event names are derived by removing `on` and lowercasing
+the remaining prop name, so custom event names with meaningful casing are not
+represented. Event handlers cannot yet be added, replaced, or removed during
+reconciliation. `class` remains accepted as a direct attribute name, but using
+it together with `className` on the same VNode is rejected.

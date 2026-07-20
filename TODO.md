@@ -168,7 +168,7 @@ Questions to answer:
   `checked`).
 - [x] Define the initial attribute rule: string props use `setAttribute`.
 - [x] Map the `className` prop to the `class` HTML attribute.
-- [ ] Update style object values.
+- [x] Update style object values.
 - [ ] Replace and remove event listeners without accumulating handlers.
 - [x] Cover controlled form properties such as `value` if useful.
 - [ ] Document intentionally unsupported DOM edge cases.
@@ -193,6 +193,14 @@ Current learning unit:
   `class` during mounting, updating, and removal.
 - Supplying both `class` and `className` on one VNode is rejected because both
   names target the same DOM attribute and would make precedence ambiguous.
+- `style` accepts an object of camelCase CSS property names and string values;
+  mounting applies each entry through the element's live `style` declaration.
+- Style reconciliation removes names missing from the new object, then sets
+  added or changed declarations without replacing the element.
+- Omitting a previously present `style` prop is equivalent to reconciling to an
+  empty style object, so every previously managed declaration is removed.
+- Numeric style values and automatic unit conversion remain intentionally
+  unsupported.
 
 Questions to answer:
 

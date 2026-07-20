@@ -179,10 +179,12 @@ console.log(firstItem === nextNode.firstChild); // true
 normalizes string and number children into `TextVNode` objects, so `mount`
 continues to receive a canonical `VNode[]`. Nested child arrays are recursively
 flattened, while `null`, `undefined`, and boolean children are omitted. Props
-can contain strings or event handler functions. During mounting, string props
-are applied as HTML attributes and function props named `on<Event>` are attached
-with `addEventListener`. `mount` is the stateless operation that creates and
-appends DOM nodes recursively. `render` uses it for the first render, then
+can contain strings, selected booleans, style objects, or event handler
+functions. During mounting, string props are applied as HTML attributes,
+`style` objects are applied through the live `CSSStyleDeclaration`, and function
+props named `on<Event>` are attached with `addEventListener`. `mount` is the
+stateless operation that creates and appends DOM nodes recursively. `render`
+uses it for the first render, then
 retains the root VNode and DOM node for that container. During subsequent
 renders, compatible element children at the same index are reconciled
 recursively. New trailing children are mounted, surplus trailing children are
@@ -192,8 +194,10 @@ updated, or removed on reused elements. The renderer maps the VNode prop
 `className` to the HTML attribute `class`. The `value` prop on `input` and
 `textarea` is assigned as a live DOM property and restored from the declarative
 value on later renders. Boolean `checked` on `input` follows the same rule.
-Other DOM property behavior, style objects, and event replacement and removal
-are intentionally not supported yet.
+Style objects use camelCase CSS names and string values; their declarations are
+added, updated, or removed individually. Numeric style values, other DOM
+property behavior, and event replacement and removal are intentionally not
+supported yet.
 
 ## Project Documents
 
@@ -231,3 +235,5 @@ are intentionally not supported yet.
   type rules.
 - `docs/class-name-prop.md`: notes on mapping the renderer prop `className` to
   the HTML attribute `class`.
+- `docs/style-prop.md`: notes on applying and reconciling individual entries in
+  a style object.

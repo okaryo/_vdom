@@ -67,6 +67,7 @@ an error until listener reconciliation can deliberately call
 Most current string props use `setAttribute` and `removeAttribute`, after the
 `className`-to-`class` name mapping. The `value` prop on `input` and `textarea`
 is an explicit exception: it is assigned as a live JavaScript property. Boolean
-`checked` on `input` is another exception. Attributes describe markup state,
-while DOM properties can represent changing runtime state with different value
-types and behavior.
+`checked` on `input` is another exception. The `style` prop is an object whose
+entries are updated through the element's live `CSSStyleDeclaration`.
+Attributes describe markup state, while DOM properties can represent changing
+runtime state with different value types and behavior.

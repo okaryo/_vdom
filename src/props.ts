@@ -1,4 +1,4 @@
-import type { ElementProps } from "./vnode";
+import type { ElementProp, ElementProps, StyleProps } from "./vnode";
 
 function eventTypeFromPropName(propName: string): string {
   if (!propName.startsWith("on") || propName.length === 2) {
@@ -32,6 +32,70 @@ function attributeNameFromPropName(propName: string): string {
   return propName === "className" ? "class" : propName;
 }
 
+function isStyleProps(value: ElementProp): value is StyleProps {
+  return typeof value === "object" && value !== null;
+}
+
+function cssPropertyNameFromStyleName(styleName: string): string {
+  if (styleName.startsWith("--")) {
+    return styleName;
+  }
+
+  return styleName.replace(
+    /[A-Z]/g,
+    (character) => `-${character.toLowerCase()}`,
+  );
+}
+
+function styleDeclarationFor(element: Element): CSSStyleDeclaration {
+  if (!(element instanceof HTMLElement)) {
+    throw new TypeError(
+      `The "style" prop is only supported on HTML elements.`,
+    );
+  }
+
+  return element.style;
+}
+
+function validateStyleProps(value: ElementProp, element: Element): void {
+  if (!isStyleProps(value)) {
+    throw new TypeError(
+      `The "style" prop on ${element.tagName.toLowerCase()} must be an object of string values.`,
+    );
+  }
+
+  for (const [styleName, styleValue] of Object.entries(value)) {
+    if (typeof styleValue !== "string") {
+      throw new TypeError(
+        `Style property "${styleName}" on ${element.tagName.toLowerCase()} must be a string.`,
+      );
+    }
+  }
+}
+
+function updateStyleProps(
+  oldStyle: StyleProps,
+  newStyle: StyleProps,
+  element: Element,
+): void {
+  const declaration = styleDeclarationFor(element);
+
+  for (const styleName of Object.keys(oldStyle)) {
+    if (!Object.hasOwn(newStyle, styleName)) {
+      declaration.removeProperty(cssPropertyNameFromStyleName(styleName));
+    }
+  }
+
+  for (const [styleName, newValue] of Object.entries(newStyle)) {
+    if (!Object.hasOwn(oldStyle, styleName) || oldStyle[styleName] !== newValue) {
+      declaration.setProperty(
+        cssPropertyNameFromStyleName(styleName),
+        newValue,
+      );
+    }
+  }
+}
+
 function validateManagedPropTypes(
   props: ElementProps,
   element: Element,
@@ -43,6 +107,16 @@ function validateManagedPropTypes(
   }
 
   for (const [name, value] of Object.entries(props)) {
+    if (name === "style") {
+      validateStyleProps(value, element);
+      styleDeclarationFor(element);
+      continue;
+    }
+
+    if (isStyleProps(value)) {
+      throw new TypeError(`Object prop "${name}" is not supported.`);
+    }
+
     if (usesValueProperty(name, element) && typeof value !== "string") {
       throw new TypeError(
         `The "value" prop on ${element.tagName.toLowerCase()} must be a string.`,
@@ -68,6 +142,11 @@ export function applyInitialElementProps(
   validateManagedPropTypes(props, element);
 
   for (const [name, value] of Object.entries(props)) {
+    if (name === "style") {
+      updateStyleProps({}, value as StyleProps, element);
+      continue;
+    }
+
     if (usesValueProperty(name, element)) {
       element.value = value as string;
       continue;
@@ -127,6 +206,18 @@ export function updateElementProps(
   validateManagedPropTypes(oldProps, element);
   validateManagedPropTypes(newProps, element);
   validateEventPropsAreUnchanged(oldProps, newProps);
+
+  const oldStyleValue = oldProps.style;
+  const newStyleValue = newProps.style;
+  const oldStyle = isStyleProps(oldStyleValue) ? oldStyleValue : {};
+  const newStyle = isStyleProps(newStyleValue) ? newStyleValue : {};
+
+  if (
+    Object.hasOwn(oldProps, "style") ||
+    Object.hasOwn(newProps, "style")
+  ) {
+    updateStyleProps(oldStyle, newStyle, element);
+  }
 
   if (
     element instanceof HTMLInputElement ||

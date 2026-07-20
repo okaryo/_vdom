@@ -72,6 +72,27 @@ describe("mount", () => {
     expect(container.childNodes).toHaveLength(0);
   });
 
+  it("applies a style object through live style properties", () => {
+    const vnode: ElementVNode = {
+      type: "element",
+      tagName: "section",
+      props: {
+        style: {
+          color: "red",
+          backgroundColor: "black",
+        },
+      },
+      children: [],
+    };
+    const container = document.createElement("div");
+
+    mount(vnode, container);
+
+    const section = container.querySelector("section");
+    expect(section?.style.color).toBe("red");
+    expect(section?.style.backgroundColor).toBe("black");
+  });
+
   it("attaches function props as event listeners", () => {
     const handleClick = vi.fn();
     const vnode: ElementVNode = {

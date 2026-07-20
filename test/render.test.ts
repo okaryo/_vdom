@@ -266,4 +266,42 @@ describe("render", () => {
     expect(updatedNode).toBe(firstNode);
     expect(clearedNode).toBe(firstNode);
   });
+
+  it("adds, updates, and removes styles on a reused element", () => {
+    const firstVNode = h(
+      "section",
+      {
+        style: {
+          color: "red",
+          backgroundColor: "black",
+        },
+      },
+      [],
+    );
+    const updatedVNode = h(
+      "section",
+      {
+        style: {
+          color: "blue",
+          borderColor: "white",
+        },
+      },
+      [],
+    );
+    const withoutStyleVNode = h("section", {}, []);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+    const section = container.querySelector("section");
+
+    const updatedNode = render(updatedVNode, container);
+    expect(section?.style.color).toBe("blue");
+    expect(section?.style.backgroundColor).toBe("");
+    expect(section?.style.borderColor).toBe("white");
+
+    const clearedNode = render(withoutStyleVNode, container);
+    expect(section?.style.color).toBe("");
+    expect(section?.style.borderColor).toBe("");
+    expect(updatedNode).toBe(firstNode);
+    expect(clearedNode).toBe(firstNode);
+  });
 });
