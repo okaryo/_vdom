@@ -83,12 +83,30 @@ describe("h", () => {
     expect(createElement).not.toHaveBeenCalled();
   });
 
-  it("rejects function component inputs until props and children are supported", () => {
+  it("passes component-specific props to a function component", () => {
+    type MessageProps = {
+      name: string;
+      count: number;
+    };
+    const component: FunctionComponent<MessageProps> = vi.fn(
+      ({ name, count }) => h("p", {}, [`${name}: ${count}`]),
+    );
+    const props = { name: "Ada", count: 2 };
+
+    const vnode = h(component, props, []);
+
+    expect(component).toHaveBeenCalledWith(props);
+    expect(vnode).toEqual({
+      type: "element",
+      tagName: "p",
+      props: {},
+      children: [{ type: "text", value: "Ada: 2" }],
+    });
+  });
+
+  it("rejects function component children until they are supported", () => {
     const component: FunctionComponent = () => h("p", {}, []);
 
-    expect(() => h(component, { id: "message" }, [])).toThrow(
-      "Function component props are not supported yet.",
-    );
     expect(() => h(component, {}, ["child"])).toThrow(
       "Function component children are not supported yet.",
     );

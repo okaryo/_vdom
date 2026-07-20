@@ -225,23 +225,27 @@ Questions to answer:
 ### 5. Declarative Rendering And Components
 
 - [x] Add minimal function components.
-- [ ] Pass component inputs as properties.
+- [x] Pass component inputs as properties.
 - [ ] Compose components and host elements.
-- [ ] Decide how component output participates in reconciliation.
+- [x] Decide how component output participates in reconciliation.
 - [ ] Add a small state-driven example after component rendering is visible.
 
 Current learning unit:
 
-- A `FunctionComponent` is currently an input-free function returning one
-  existing `VNode`.
+- A `FunctionComponent<Props>` receives component-specific typed data and
+  returns one existing `VNode`; its props are not restricted to host DOM prop
+  value types.
 - Passing a function to `h` evaluates it eagerly during VNode creation; its
   returned element or text VNode enters the existing renderer unchanged.
+- Updating component props creates a new output VNode, which is reconciled by
+  the same kind, tag-name, prop, text, and positional rules as a handwritten
+  VNode.
 - No component-specific VNode or DOM wrapper is created, so DOM identity still
   comes entirely from the returned VNode's kind, tag name, and position.
 - Because the component boundary is not retained, it has no independent
   identity, state, or lifecycle yet.
-- Component props and children are rejected rather than silently ignored; they
-  remain the next learning unit.
+- Component children remain rejected rather than silently ignored; composition
+  is the next learning unit.
 
 Questions to answer:
 

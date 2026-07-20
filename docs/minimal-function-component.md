@@ -1,26 +1,26 @@
 # Minimal Function Components
 
-The first component form is an input-free function that returns one existing
-VNode:
+The first component form is a function that receives typed props and returns one
+existing VNode:
 
 ```ts
-type FunctionComponent = () => VNode;
+type FunctionComponent<Props extends object> = (props: Props) => VNode;
 
-const Message: FunctionComponent = () =>
-  h("p", { className: "message" }, ["Hello"]);
+const Message: FunctionComponent<{ name: string }> = ({ name }) =>
+  h("p", { className: "message" }, [`Hello, ${name}`]);
 ```
 
 It is used by passing the function itself to `h`:
 
 ```ts
-const vnode = h(Message, {}, []);
+const vnode = h(Message, { name: "Ada" }, []);
 render(vnode, container);
 ```
 
 The resulting DOM contains only the component's output:
 
 ```html
-<p class="message">Hello</p>
+<p class="message">Hello, Ada</p>
 ```
 
 There is no component wrapper element.
@@ -30,9 +30,9 @@ There is no component wrapper element.
 The current call flow is deliberately small:
 
 ```text
-h(Message, {}, [])
-  -> Message()
-  -> h("p", ..., ["Hello"])
+h(Message, { name: "Ada" }, [])
+  -> Message({ name: "Ada" })
+  -> h("p", ..., ["Hello, Ada"])
   -> ElementVNode
   -> render / mount / reconcile
 ```
@@ -55,15 +55,13 @@ This is enough to expose component evaluation without adding an internal
 component instance or Fiber-like structure. A later state lesson may show why
 retaining a component boundary becomes useful.
 
-## Deliberate Input Boundary
+## Deliberate Children Boundary
 
-Props and children are rejected in this unit:
+Component props are supported, but third-argument children remain rejected:
 
 ```ts
-h(Message, { id: "message" }, []); // TypeError
-h(Message, {}, ["child"]);         // TypeError
+h(Message, { name: "Ada" }, ["child"]); // TypeError
 ```
 
-Rejecting them prevents data from being silently discarded. The next learning
-unit can define how component inputs differ from host-element props and how
-they reach the function.
+Rejecting children prevents them from being silently discarded. The next
+learning unit can define how normalized children become component input.

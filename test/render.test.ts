@@ -34,6 +34,27 @@ describe("render", () => {
     expect(node).toBe(container.firstChild);
   });
 
+  it("reconciles output created from updated function component props", () => {
+    type GreetingProps = {
+      name: string;
+    };
+    const component: FunctionComponent<GreetingProps> = ({ name }) =>
+      h("p", { className: "greeting" }, [`Hello, ${name}`]);
+    const firstVNode = h(component, { name: "Ada" }, []);
+    const updatedVNode = h(component, { name: "Grace" }, []);
+    const container = document.createElement("div");
+    const firstNode = render(firstVNode, container);
+    const firstText = firstNode.firstChild;
+
+    const updatedNode = render(updatedVNode, container);
+
+    expect(container.innerHTML).toBe(
+      '<p class="greeting">Hello, Grace</p>',
+    );
+    expect(updatedNode).toBe(firstNode);
+    expect(updatedNode.firstChild).toBe(firstText);
+  });
+
   it("adds the first child while preserving the root DOM node", () => {
     const firstVNode = h("ul", {}, []);
     const nextVNode = h("ul", {}, [h("li", {}, ["new child"])]);

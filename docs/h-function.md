@@ -49,15 +49,17 @@ There are still no default props or variadic children.
 
 ## Function Component Overload
 
-`h` now also accepts an input-free `FunctionComponent`:
+`h` now also accepts a generic `FunctionComponent`:
 
 ```ts
-type FunctionComponent = () => VNode;
+type FunctionComponent<Props extends object> = (props: Props) => VNode;
 
-const Message: FunctionComponent = () => h("p", {}, ["Hello"]);
-const vnode = h(Message, {}, []);
+const Message: FunctionComponent<{ name: string }> = ({ name }) =>
+  h("p", {}, [`Hello, ${name}`]);
+
+const vnode = h(Message, { name: "Ada" }, []);
 ```
 
 This overload eagerly evaluates `Message` and returns its result. It still does
-not call a browser DOM API. Component props and children are rejected until
-their data flow is introduced explicitly.
+not call a browser DOM API. Component children remain rejected until their data
+flow is introduced explicitly.
