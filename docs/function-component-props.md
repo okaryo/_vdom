@@ -1,6 +1,7 @@
 # Function Component Props
 
-Function components use a generic props type rather than `ElementProps`:
+Function components use a generic string-keyed props type rather than
+`ElementProps`:
 
 ```ts
 type GreetingProps = {
@@ -19,7 +20,7 @@ h(Greeting, { name: "Ada", count: 2 }, []);
 ```
 
 TypeScript checks the object against `GreetingProps`, then the implementation
-passes the same object to `Greeting`.
+creates a new object that adds normalized `children` before calling `Greeting`.
 
 ## Component Props Versus Host Props
 
@@ -42,6 +43,15 @@ attributes, selected DOM properties, CSS declarations, or listeners.
 
 Component props do not automatically become DOM attributes. The component must
 choose which values appear in its returned host VNode.
+
+The props container itself is a named property object. An array is data inside
+a prop rather than the entire props value:
+
+```ts
+h(List, { items: ["one", "two"] }, []); // supported shape
+```
+
+This makes room for the reserved `children` property and future named inputs.
 
 ## Reconciliation Of Changed Props
 

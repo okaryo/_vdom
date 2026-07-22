@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { h, type FunctionComponent, type TextVNode } from "../src";
+import {
+  h,
+  type ComponentProps,
+  type FunctionComponent,
+  type TextVNode,
+} from "../src";
 
 describe("h", () => {
   afterEach(() => {
@@ -95,7 +100,11 @@ describe("h", () => {
 
     const vnode = h(component, props, []);
 
-    expect(component).toHaveBeenCalledWith(props);
+    expect(component).toHaveBeenCalledWith({
+      ...props,
+      children: [],
+    });
+    expect(Object.hasOwn(props, "children")).toBe(false);
     expect(vnode).toEqual({
       type: "element",
       tagName: "p",
@@ -104,11 +113,59 @@ describe("h", () => {
     });
   });
 
-  it("rejects function component children until they are supported", () => {
-    const component: FunctionComponent = () => h("p", {}, []);
+  it("normalizes children before passing them to a function component", () => {
+    type PanelProps = {
+      title: string;
+    };
+    const existingChild = h("strong", {}, ["existing"]);
+    const component: FunctionComponent<PanelProps> = vi.fn(
+      ({ title, children }) =>
+        h("section", {}, [h("h2", {}, [title]), ...children]),
+    );
 
-    expect(() => h(component, {}, ["child"])).toThrow(
-      "Function component children are not supported yet.",
+    const vnode = h(
+      component,
+      { title: "Lesson" },
+      ["first", [2, null], false, existingChild],
+    );
+
+    expect(component).toHaveBeenCalledWith({
+      title: "Lesson",
+      children: [
+        { type: "text", value: "first" },
+        { type: "text", value: "2" },
+        existingChild,
+      ],
+    });
+    expect(vnode).toEqual({
+      type: "element",
+      tagName: "section",
+      props: {},
+      children: [
+        {
+          type: "element",
+          tagName: "h2",
+          props: {},
+          children: [{ type: "text", value: "Lesson" }],
+        },
+        { type: "text", value: "first" },
+        { type: "text", value: "2" },
+        existingChild,
+      ],
+    });
+  });
+
+  it("rejects ambiguous function component prop shapes", () => {
+    const component: FunctionComponent<ComponentProps> = ({ children }) =>
+      h("div", {}, children);
+
+    expect(() =>
+      h(component, ["item"] as unknown as ComponentProps, []),
+    ).toThrow(
+      "Function component props must be a property object, not an array.",
+    );
+    expect(() => h(component, { children: [] }, [])).toThrow(
+      'Pass function component children as the third h argument, not as a "children" prop.',
     );
   });
 });

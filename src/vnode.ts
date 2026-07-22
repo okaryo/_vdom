@@ -6,6 +6,8 @@ export type ElementProp = string | boolean | EventHandler | StyleProps;
 
 export type ElementProps = Record<string, ElementProp>;
 
+export type ComponentProps = Record<string, unknown>;
+
 export type ElementVNode = {
   type: "element";
   tagName: string;
@@ -20,9 +22,13 @@ export type TextVNode = {
 
 export type VNode = ElementVNode | TextVNode;
 
+export type PropsWithChildren<Props extends ComponentProps> = Props & {
+  children: VNode[];
+};
+
 export type FunctionComponent<
-  Props extends object = Record<string, never>,
-> = (props: Props) => VNode;
+  Props extends ComponentProps = Record<never, never>,
+> = (props: PropsWithChildren<Props>) => VNode;
 
 export type VNodeChild =
   | VNode
@@ -69,12 +75,12 @@ export function h(
   props: ElementProps,
   children: VNodeChild[],
 ): ElementVNode;
-export function h<Props extends object>(
+export function h<Props extends ComponentProps>(
   component: FunctionComponent<Props>,
   props: Props,
   children: VNodeChild[],
 ): VNode;
-export function h<Props extends object>(
+export function h<Props extends ComponentProps>(
   type: string | FunctionComponent<Props>,
   props: ElementProps | Props,
   children: VNodeChild[],
@@ -82,13 +88,24 @@ export function h<Props extends object>(
   const normalizedChildren = normalizeChildren(children);
 
   if (typeof type === "function") {
-    if (normalizedChildren.length > 0) {
+    if (Array.isArray(props)) {
       throw new TypeError(
-        "Function component children are not supported yet.",
+        "Function component props must be a property object, not an array.",
       );
     }
 
-    return type(props as Props);
+    if (Object.hasOwn(props, "children")) {
+      throw new TypeError(
+        'Pass function component children as the third h argument, not as a "children" prop.',
+      );
+    }
+
+    const componentProps = {
+      ...props,
+      children: normalizedChildren,
+    } as PropsWithChildren<Props>;
+
+    return type(componentProps);
   }
 
   return {

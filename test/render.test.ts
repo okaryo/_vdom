@@ -55,6 +55,36 @@ describe("render", () => {
     expect(updatedNode.firstChild).toBe(firstText);
   });
 
+  it("composes function components, host elements, and children", () => {
+    type BadgeProps = {
+      label: string;
+    };
+    const Badge: FunctionComponent<BadgeProps> = ({ label }) =>
+      h("span", { className: "badge" }, [label]);
+
+    type CardProps = {
+      title: string;
+    };
+    const Card: FunctionComponent<CardProps> = ({ title, children }) =>
+      h("article", {}, [
+        h("h2", {}, [title]),
+        h("div", { className: "body" }, children),
+      ]);
+
+    const vnode = h(Card, { title: "Components" }, [
+      h(Badge, { label: "New" }, []),
+      h("p", {}, ["Composable output"]),
+    ]);
+    const container = document.createElement("div");
+
+    render(vnode, container);
+
+    expect(container.innerHTML).toBe(
+      '<article><h2>Components</h2><div class="body"><span class="badge">New</span><p>Composable output</p></div></article>',
+    );
+    expect(container.querySelectorAll("article > .body > *")).toHaveLength(2);
+  });
+
   it("adds the first child while preserving the root DOM node", () => {
     const firstVNode = h("ul", {}, []);
     const nextVNode = h("ul", {}, [h("li", {}, ["new child"])]);

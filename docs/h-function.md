@@ -52,7 +52,13 @@ There are still no default props or variadic children.
 `h` now also accepts a generic `FunctionComponent`:
 
 ```ts
-type FunctionComponent<Props extends object> = (props: Props) => VNode;
+type ComponentProps = Record<string, unknown>;
+type PropsWithChildren<Props extends ComponentProps> = Props & {
+  children: VNode[];
+};
+type FunctionComponent<Props extends ComponentProps> = (
+  props: PropsWithChildren<Props>,
+) => VNode;
 
 const Message: FunctionComponent<{ name: string }> = ({ name }) =>
   h("p", {}, [`Hello, ${name}`]);
@@ -61,5 +67,5 @@ const vnode = h(Message, { name: "Ada" }, []);
 ```
 
 This overload eagerly evaluates `Message` and returns its result. It still does
-not call a browser DOM API. Component children remain rejected until their data
-flow is introduced explicitly.
+not call a browser DOM API. Third-argument children are normalized and injected
+into the function's props as `children: VNode[]`.

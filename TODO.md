@@ -226,15 +226,17 @@ Questions to answer:
 
 - [x] Add minimal function components.
 - [x] Pass component inputs as properties.
-- [ ] Compose components and host elements.
+- [x] Compose components and host elements.
 - [x] Decide how component output participates in reconciliation.
 - [ ] Add a small state-driven example after component rendering is visible.
 
 Current learning unit:
 
 - A `FunctionComponent<Props>` receives component-specific typed data and
-  returns one existing `VNode`; its props are not restricted to host DOM prop
-  value types.
+  normalized `children`, then returns one existing `VNode`; its named props are
+  not restricted to host DOM prop value types.
+- Component props use a string-keyed property object. Arrays are intentionally
+  passed under a named prop such as `{ items }`, not as the props value itself.
 - Passing a function to `h` evaluates it eagerly during VNode creation; its
   returned element or text VNode enters the existing renderer unchanged.
 - Updating component props creates a new output VNode, which is reconciled by
@@ -244,8 +246,11 @@ Current learning unit:
   comes entirely from the returned VNode's kind, tag name, and position.
 - Because the component boundary is not retained, it has no independent
   identity, state, or lifecycle yet.
-- Component children remain rejected rather than silently ignored; composition
-  is the next learning unit.
+- `h` normalizes component children into `VNode[]` and injects them as the
+  reserved `children` prop without mutating the caller's props object.
+- Eagerly expanded component output can be nested with host VNodes and other
+  component output, while the resulting renderer input remains an ordinary
+  VNode tree.
 
 Questions to answer:
 

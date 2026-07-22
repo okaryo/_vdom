@@ -4,7 +4,9 @@ The first component form is a function that receives typed props and returns one
 existing VNode:
 
 ```ts
-type FunctionComponent<Props extends object> = (props: Props) => VNode;
+type FunctionComponent<Props extends ComponentProps> = (
+  props: Props & { children: VNode[] },
+) => VNode;
 
 const Message: FunctionComponent<{ name: string }> = ({ name }) =>
   h("p", { className: "message" }, [`Hello, ${name}`]);
@@ -31,7 +33,7 @@ The current call flow is deliberately small:
 
 ```text
 h(Message, { name: "Ada" }, [])
-  -> Message({ name: "Ada" })
+  -> Message({ name: "Ada", children: [] })
   -> h("p", ..., ["Hello, Ada"])
   -> ElementVNode
   -> render / mount / reconcile
@@ -55,13 +57,15 @@ This is enough to expose component evaluation without adding an internal
 component instance or Fiber-like structure. A later state lesson may show why
 retaining a component boundary becomes useful.
 
-## Deliberate Children Boundary
+## Children Boundary
 
-Component props are supported, but third-argument children remain rejected:
+Third-argument children are normalized before the component runs:
 
 ```ts
-h(Message, { name: "Ada" }, ["child"]); // TypeError
+h(Message, { name: "Ada" }, ["child"]);
+// Message receives:
+// { name: "Ada", children: [{ type: "text", value: "child" }] }
 ```
 
-Rejecting children prevents them from being silently discarded. The next
-learning unit can define how normalized children become component input.
+`children` is reserved for this normalized array. Supplying it directly inside
+the second argument is rejected so that there is only one child-input path.

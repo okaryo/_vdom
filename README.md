@@ -179,8 +179,10 @@ DOM side effects. It normalizes string and number children into `TextVNode`
 objects, so `mount` continues to receive a canonical `VNode[]`. A function
 component with component-specific typed props can also be passed to `h`; it is
 evaluated eagerly into the ordinary VNode it returns and creates no extra DOM
-wrapper. Nested child arrays are recursively flattened, while `null`,
-`undefined`, and boolean children are omitted. Props
+wrapper. Its children are normalized and passed to the function as a reserved
+`children: VNode[]` prop, allowing component and host output to be composed.
+Nested child arrays are recursively flattened, while `null`, `undefined`, and
+boolean children are omitted. Props
 can contain strings, selected booleans, style objects, or event handler
 functions. During mounting, string props are applied as HTML attributes,
 `style` objects are applied through the live `CSSStyleDeclaration`, and function
@@ -248,3 +250,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   function component into an ordinary VNode.
 - `docs/function-component-props.md`: notes on typed component inputs and how
   their output enters host VNode reconciliation.
+- `docs/function-component-children.md`: notes on normalized component children
+  and eager composition with host elements and other components.
