@@ -228,7 +228,7 @@ Questions to answer:
 - [x] Pass component inputs as properties.
 - [x] Compose components and host elements.
 - [x] Decide how component output participates in reconciliation.
-- [ ] Add a small state-driven example after component rendering is visible.
+- [x] Add a small state-driven example after component rendering is visible.
 
 Current learning unit:
 
@@ -251,6 +251,14 @@ Current learning unit:
 - Eagerly expanded component output can be nested with host VNodes and other
   component output, while the resulting renderer input remains an ordinary
   VNode tree.
+- A first state-driven counter keeps `count` in application code and explicitly
+  calls the root `render` function from its event handler.
+- The update is fully synchronous: the component is evaluated again, its new
+  output is reconciled, and the compatible button and Text DOM nodes are reused
+  before the handler returns.
+- This separates application state from the renderer's retained root state and
+  exposes the missing connection that a component-owned state mechanism must
+  provide.
 
 Questions to answer:
 

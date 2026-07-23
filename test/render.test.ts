@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   h,
   render,
+  type EventHandler,
   type FunctionComponent,
   type TextVNode,
 } from "../src";
@@ -83,6 +84,37 @@ describe("render", () => {
       '<article><h2>Components</h2><div class="body"><span class="badge">New</span><p>Composable output</p></div></article>',
     );
     expect(container.querySelectorAll("article > .body > *")).toHaveLength(2);
+  });
+
+  it("rerenders component output synchronously after application state changes", () => {
+    type CounterProps = {
+      count: number;
+      onIncrement: EventHandler;
+    };
+    const Counter: FunctionComponent<CounterProps> = ({
+      count,
+      onIncrement,
+    }) =>
+      h("button", { onClick: onIncrement }, [`Count: ${count}`]);
+    const container = document.createElement("div");
+    let count = 0;
+
+    const increment: EventHandler = () => {
+      count += 1;
+      rerender();
+    };
+    const rerender = () =>
+      render(h(Counter, { count, onIncrement: increment }, []), container);
+
+    const firstNode = rerender();
+    const firstText = firstNode.firstChild;
+
+    firstNode.dispatchEvent(new MouseEvent("click"));
+
+    expect(count).toBe(1);
+    expect(container.innerHTML).toBe("<button>Count: 1</button>");
+    expect(container.firstChild).toBe(firstNode);
+    expect(firstNode.firstChild).toBe(firstText);
   });
 
   it("adds the first child while preserving the root DOM node", () => {
