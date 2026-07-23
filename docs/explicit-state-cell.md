@@ -10,19 +10,20 @@ count.set(1);
 count.get(); // 1
 ```
 
-The returned `StateCell` owns one current value. Its two operations deliberately
+The returned `StateCell` owns one current value. Its operations deliberately
 have narrow responsibilities:
 
 - `get` reads the current value.
 - `set` replaces the current value.
+- `subscribe` registers a callback that runs after a replacement.
 
-There is no DOM knowledge, component knowledge, notification, update queue, or
-batching in the state cell.
+There is no DOM knowledge, component knowledge, update queue, or batching in
+the state cell. Its notification contains no rendering behavior of its own.
 
 ## State Change Is Not A Render
 
-If a component output was rendered from `count.get()`, calling `count.set(1)`
-does not change the existing VNode or DOM:
+If no rerender callback has been subscribed, calling `count.set(1)` does not
+change an existing VNode or DOM that was rendered from `count.get()`:
 
 ```text
 count.set(1)
@@ -38,8 +39,9 @@ new VNode, and passes it to `render`:
 count.get() -> h(Counter, { count: 1 }, []) -> render -> reconciliation
 ```
 
-Reconciliation can still reuse the paragraph and Text DOM nodes. The missing
-piece is not DOM patching; it is scheduling `render` when `set` is called.
+Reconciliation can still reuse the paragraph and Text DOM nodes. Application
+code can now supply the missing scheduling connection with `subscribe`; that
+next boundary is described in `synchronous-state-rerender.md`.
 
 ## Why Keep This Step Separate?
 

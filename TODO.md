@@ -269,7 +269,7 @@ Questions to answer:
 ### 6. State And Rerendering
 
 - [x] Add the smallest explicit state update mechanism.
-- [ ] Trigger synchronous rerendering from a state change.
+- [x] Trigger synchronous rerendering from a state change.
 - [ ] Preserve state according to component identity.
 - [ ] Decide behavior when multiple updates occur together.
 - [ ] Build a small counter or Todo example.
@@ -278,13 +278,19 @@ Current learning unit:
 
 - `createState` returns a minimal `StateCell` that can read and replace one
   current value without knowing about components or the DOM.
-- Calling `StateCell.set` alone deliberately leaves already rendered output
-  unchanged; application code must still create a new VNode and call `render`.
+- Calling `StateCell.set` without a subscriber deliberately leaves already
+  rendered output unchanged.
 - Once rerendered, the existing reconciliation path updates the text while
   preserving compatible DOM node identity.
-- The next missing boundary is notification: a state change needs a way to
-  request the appropriate render without coupling the state cell directly to
-  DOM mutation.
+- `StateCell.subscribe` adds a notification boundary. Application code can
+  subscribe a root `rerender` function, causing the complete update to finish
+  synchronously before `set` returns without coupling the cell to DOM mutation.
+- Subscriptions can be removed explicitly, while the current state value
+  remains in the cell.
+- Notifications currently run for every `set` call with no equality bailout,
+  batching, queue, or reentrancy protection.
+- State remains application-owned; preserving component-owned state next
+  requires a component identity that survives repeated VNode creation.
 
 Questions to answer:
 
