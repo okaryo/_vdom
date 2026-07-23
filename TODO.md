@@ -268,11 +268,23 @@ Questions to answer:
 
 ### 6. State And Rerendering
 
-- [ ] Add the smallest explicit state update mechanism.
+- [x] Add the smallest explicit state update mechanism.
 - [ ] Trigger synchronous rerendering from a state change.
 - [ ] Preserve state according to component identity.
 - [ ] Decide behavior when multiple updates occur together.
 - [ ] Build a small counter or Todo example.
+
+Current learning unit:
+
+- `createState` returns a minimal `StateCell` that can read and replace one
+  current value without knowing about components or the DOM.
+- Calling `StateCell.set` alone deliberately leaves already rendered output
+  unchanged; application code must still create a new VNode and call `render`.
+- Once rerendered, the existing reconciliation path updates the text while
+  preserving compatible DOM node identity.
+- The next missing boundary is notification: a state change needs a way to
+  request the appropriate render without coupling the state cell directly to
+  DOM mutation.
 
 Questions to answer:
 
