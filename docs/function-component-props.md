@@ -20,7 +20,8 @@ h(Greeting, { name: "Ada", count: 2 }, []);
 ```
 
 TypeScript checks the object against `GreetingProps`, then the implementation
-creates a new object that adds normalized `children` before calling `Greeting`.
+creates a `ComponentVNode` whose props add normalized `children`. The renderer
+calls `Greeting` later during mounting or reconciliation.
 
 ## Component Props Versus Host Props
 
@@ -55,9 +56,10 @@ This makes room for the reserved `children` property and future named inputs.
 
 ## Reconciliation Of Changed Props
 
-Because components are still expanded eagerly, changing their props calls the
-function with new data and produces a new ordinary VNode. The existing renderer
-then compares that output with the previous output:
+Changing component props creates a new `ComponentVNode`. If its function
+matches the previous component at that position, the renderer reuses the
+component instance, calls the function with the new props, and compares the new
+output with the retained old output:
 
 ```text
 Greeting({ name: "Ada" })   -> <p>Hello, Ada</p>
@@ -67,6 +69,6 @@ Greeting({ name: "Grace" }) -> <p>Hello, Grace</p>
 Both outputs are compatible `p` VNodes, so the same paragraph and Text node can
 be reused while `Text.data` changes.
 
-The component function and its props are not retained as their own internal
-node yet. Reconciliation sees only the expanded output, so component-specific
-identity and state remain unsupported.
+The component boundary therefore has an identity separate from its output DOM:
+the same function at the same reconciled position is compatible. A different
+function is incompatible even when both functions return the same host tag.

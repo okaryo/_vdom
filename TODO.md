@@ -237,20 +237,21 @@ Current learning unit:
   not restricted to host DOM prop value types.
 - Component props use a string-keyed property object. Arrays are intentionally
   passed under a named prop such as `{ items }`, not as the props value itself.
-- Passing a function to `h` evaluates it eagerly during VNode creation; its
-  returned element or text VNode enters the existing renderer unchanged.
-- Updating component props creates a new output VNode, which is reconciled by
-  the same kind, tag-name, prop, text, and positional rules as a handwritten
-  VNode.
-- No component-specific VNode or DOM wrapper is created, so DOM identity still
-  comes entirely from the returned VNode's kind, tag name, and position.
-- Because the component boundary is not retained, it has no independent
-  identity, state, or lifecycle yet.
+- Passing a function to `h` creates a `ComponentVNode` without evaluating the
+  function; the renderer evaluates it during mounting or reconciliation.
+- A component creates no DOM wrapper, but its renderer boundary is retained
+  separately from the host or text VNode it returns.
+- A small `ComponentInstance` retains the previous output VNode. Compatible
+  updates transfer that instance to the newly created `ComponentVNode`.
+- Component compatibility requires the same function at an already matched
+  tree position. Different functions replace their output even if both return
+  the same host element tag.
+- Updating component props evaluates the reused component again, then
+  reconciles its old and new outputs using the existing renderer rules.
 - `h` normalizes component children into `VNode[]` and injects them as the
   reserved `children` prop without mutating the caller's props object.
-- Eagerly expanded component output can be nested with host VNodes and other
-  component output, while the resulting renderer input remains an ordinary
-  VNode tree.
+- Retained component VNodes can be nested with host VNodes and other component
+  VNodes while the browser DOM still contains only host and text nodes.
 - A first state-driven counter keeps `count` in application code and explicitly
   calls the root `render` function from its event handler.
 - The update is fully synchronous: the component is evaluated again, its new
@@ -270,6 +271,7 @@ Questions to answer:
 
 - [x] Add the smallest explicit state update mechanism.
 - [x] Trigger synchronous rerendering from a state change.
+- [x] Retain a component boundary that can carry component identity.
 - [ ] Preserve state according to component identity.
 - [ ] Decide behavior when multiple updates occur together.
 - [ ] Build a small counter or Todo example.
@@ -289,8 +291,9 @@ Current learning unit:
   remains in the cell.
 - Notifications currently run for every `set` call with no equality bailout,
   batching, queue, or reentrancy protection.
-- State remains application-owned; preserving component-owned state next
-  requires a component identity that survives repeated VNode creation.
+- State remains application-owned, but compatible component VNodes now reuse a
+  small internal instance. That instance is the location where component-owned
+  state can survive repeated VNode creation in the next unit.
 
 Questions to answer:
 

@@ -56,6 +56,21 @@ describe("render", () => {
     expect(updatedNode.firstChild).toBe(firstText);
   });
 
+  it("replaces output when the component function changes", () => {
+    const FirstComponent: FunctionComponent = () =>
+      h("p", {}, ["Same host type"]);
+    const SecondComponent: FunctionComponent = () =>
+      h("p", {}, ["Same host type"]);
+    const container = document.createElement("div");
+    const firstNode = render(h(FirstComponent, {}, []), container);
+
+    const nextNode = render(h(SecondComponent, {}, []), container);
+
+    expect(container.innerHTML).toBe("<p>Same host type</p>");
+    expect(nextNode).not.toBe(firstNode);
+    expect(firstNode.parentNode).toBeNull();
+  });
+
   it("composes function components, host elements, and children", () => {
     type BadgeProps = {
       label: string;

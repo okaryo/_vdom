@@ -177,10 +177,11 @@ console.log(firstItem === nextNode.firstChild); // true
 With a string tag name, `h` only creates a plain element description and has no
 DOM side effects. It normalizes string and number children into `TextVNode`
 objects, so `mount` continues to receive a canonical `VNode[]`. A function
-component with component-specific typed props can also be passed to `h`; it is
-evaluated eagerly into the ordinary VNode it returns and creates no extra DOM
-wrapper. Its children are normalized and passed to the function as a reserved
-`children: VNode[]` prop, allowing component and host output to be composed.
+component with component-specific typed props can also be passed to `h`;
+`h` retains it as a `ComponentVNode` and creates no extra DOM wrapper. Its
+children are normalized and stored in a reserved `children: VNode[]` prop.
+The renderer evaluates the function during mounting and reconciliation, and
+retains its previous output in a small internal component instance.
 Nested child arrays are recursively flattened, while `null`, `undefined`, and
 boolean children are omitted. Props
 can contain strings, selected booleans, style objects, or event handler
@@ -246,9 +247,11 @@ added, replaced, or removed without accumulating listeners on reused elements.
   a style object.
 - `docs/dom-boundaries-and-limitations.md`: the current supported DOM boundary
   and intentionally unsupported browser and lifecycle cases.
-- `docs/minimal-function-component.md`: notes on eagerly expanding an
-  function component into an ordinary VNode.
+- `docs/minimal-function-component.md`: notes on the initial eager component
+  model and why the renderer later retained the component boundary.
 - `docs/function-component-props.md`: notes on typed component inputs and how
   their output enters host VNode reconciliation.
 - `docs/function-component-children.md`: notes on normalized component children
-  and eager composition with host elements and other components.
+  and composition with host elements and other components.
+- `docs/retained-component-boundary.md`: notes on `ComponentVNode`, the
+  internal component instance, and function-based component identity.

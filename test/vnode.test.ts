@@ -70,7 +70,7 @@ describe("h", () => {
     expect(vnode.children[2]).toBe(child);
   });
 
-  it("eagerly evaluates a function component into its returned VNode", () => {
+  it("creates a component VNode without evaluating the function", () => {
     const component: FunctionComponent = vi.fn(() =>
       h("p", { className: "message" }, ["Hello"]),
     );
@@ -78,17 +78,16 @@ describe("h", () => {
 
     const vnode = h(component, {}, []);
 
-    expect(component).toHaveBeenCalledOnce();
+    expect(component).not.toHaveBeenCalled();
     expect(vnode).toEqual({
-      type: "element",
-      tagName: "p",
-      props: { className: "message" },
-      children: [{ type: "text", value: "Hello" }],
+      type: "component",
+      component,
+      props: { children: [] },
     });
     expect(createElement).not.toHaveBeenCalled();
   });
 
-  it("passes component-specific props to a function component", () => {
+  it("retains component-specific props without mutating the input", () => {
     type MessageProps = {
       name: string;
       count: number;
@@ -100,20 +99,15 @@ describe("h", () => {
 
     const vnode = h(component, props, []);
 
-    expect(component).toHaveBeenCalledWith({
+    expect(component).not.toHaveBeenCalled();
+    expect(vnode.props).toEqual({
       ...props,
       children: [],
     });
     expect(Object.hasOwn(props, "children")).toBe(false);
-    expect(vnode).toEqual({
-      type: "element",
-      tagName: "p",
-      props: {},
-      children: [{ type: "text", value: "Ada: 2" }],
-    });
   });
 
-  it("normalizes children before passing them to a function component", () => {
+  it("normalizes children before retaining them on a component VNode", () => {
     type PanelProps = {
       title: string;
     };
@@ -129,25 +123,10 @@ describe("h", () => {
       ["first", [2, null], false, existingChild],
     );
 
-    expect(component).toHaveBeenCalledWith({
+    expect(component).not.toHaveBeenCalled();
+    expect(vnode.props).toEqual({
       title: "Lesson",
       children: [
-        { type: "text", value: "first" },
-        { type: "text", value: "2" },
-        existingChild,
-      ],
-    });
-    expect(vnode).toEqual({
-      type: "element",
-      tagName: "section",
-      props: {},
-      children: [
-        {
-          type: "element",
-          tagName: "h2",
-          props: {},
-          children: [{ type: "text", value: "Lesson" }],
-        },
         { type: "text", value: "first" },
         { type: "text", value: "2" },
         existingChild,

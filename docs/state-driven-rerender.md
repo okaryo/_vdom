@@ -38,7 +38,7 @@ returns:
 
 1. The handler changes `count`.
 2. The handler calls `rerender` explicitly.
-3. `Counter` is evaluated eagerly with the new prop.
+3. The renderer evaluates `Counter` with the new prop.
 4. `render` compares the new output with the retained old output.
 5. The compatible button and Text DOM nodes are reused, while `Text.data`
    changes.
@@ -56,7 +56,6 @@ state update -> find the owning rendered component -> produce new output
              -> reconcile it with the old output
 ```
 
-The current eager component expansion loses the component boundary before
-`render` receives the VNode. That is sufficient while application code calls
-the root `render` function explicitly, but component-owned state will require
-the library to retain more information about where the component belongs.
+The first eager component implementation lost the component boundary before
+`render` received the VNode. The renderer now retains that boundary and its
+previous output as the next prerequisite for component-owned state.

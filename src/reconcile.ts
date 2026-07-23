@@ -1,3 +1,4 @@
+import { reuseComponentInstance } from "./component-instance";
 import { mount } from "./mount";
 import { updateElementProps } from "./props";
 import type { VNode } from "./vnode";
@@ -9,6 +10,13 @@ function areCompatible(oldVNode: VNode, newVNode: VNode): boolean {
 
   if (oldVNode.type === "element" && newVNode.type === "element") {
     return oldVNode.tagName === newVNode.tagName;
+  }
+
+  if (
+    oldVNode.type === "component" &&
+    newVNode.type === "component"
+  ) {
+    return oldVNode.component === newVNode.component;
   }
 
   return false;
@@ -86,9 +94,22 @@ export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
     return node;
   }
 
+  if (
+    oldVNode.type === "component" &&
+    newVNode.type === "component"
+  ) {
+    const instance = reuseComponentInstance(oldVNode, newVNode);
+    const oldOutput = instance.output;
+    const newOutput = newVNode.component(newVNode.props);
+
+    instance.output = newOutput;
+
+    return reconcile(oldOutput, newOutput, node);
+  }
+
   if (oldVNode.type !== "element" || newVNode.type !== "element") {
     throw new Error(
-      "Compatible VNodes must both be text nodes or matching elements.",
+      "Compatible VNodes must have matching text, element, or component kinds.",
     );
   }
 

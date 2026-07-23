@@ -86,7 +86,7 @@ multiple root nodes are unsupported. Children are matched only by position;
 there are no keys or move operations yet.
 
 Two elements are currently compatible when their tag names match. Compatibility
-does not account for namespaces, keys, or component identity because those
+does not account for namespaces or keys because those
 concepts are not represented yet.
 
 ## Non-Transactional Updates

@@ -20,8 +20,6 @@ export type TextVNode = {
   value: string;
 };
 
-export type VNode = ElementVNode | TextVNode;
-
 export type PropsWithChildren<Props extends ComponentProps> = Props & {
   children: VNode[];
 };
@@ -29,6 +27,19 @@ export type PropsWithChildren<Props extends ComponentProps> = Props & {
 export type FunctionComponent<
   Props extends ComponentProps = Record<never, never>,
 > = (props: PropsWithChildren<Props>) => VNode;
+
+export type ComponentVNode<
+  Props extends ComponentProps = ComponentProps,
+> = {
+  type: "component";
+  component: FunctionComponent<Props>;
+  props: PropsWithChildren<Props>;
+};
+
+export type VNode =
+  | ElementVNode
+  | TextVNode
+  | ComponentVNode<any>;
 
 export type VNodeChild =
   | VNode
@@ -79,7 +90,7 @@ export function h<Props extends ComponentProps>(
   component: FunctionComponent<Props>,
   props: Props,
   children: VNodeChild[],
-): VNode;
+): ComponentVNode<Props>;
 export function h<Props extends ComponentProps>(
   type: string | FunctionComponent<Props>,
   props: ElementProps | Props,
@@ -100,12 +111,14 @@ export function h<Props extends ComponentProps>(
       );
     }
 
-    const componentProps = {
-      ...props,
-      children: normalizedChildren,
-    } as PropsWithChildren<Props>;
-
-    return type(componentProps);
+    return {
+      type: "component",
+      component: type,
+      props: {
+        ...props,
+        children: normalizedChildren,
+      } as PropsWithChildren<Props>,
+    };
   }
 
   return {

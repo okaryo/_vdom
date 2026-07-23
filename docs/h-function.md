@@ -66,6 +66,8 @@ const Message: FunctionComponent<{ name: string }> = ({ name }) =>
 const vnode = h(Message, { name: "Ada" }, []);
 ```
 
-This overload eagerly evaluates `Message` and returns its result. It still does
-not call a browser DOM API. Third-argument children are normalized and injected
-into the function's props as `children: VNode[]`.
+This overload returns a `ComponentVNode` containing `Message` and its props; it
+does not evaluate the function or call a browser DOM API. Third-argument
+children are normalized and retained in the component props as
+`children: VNode[]`. The renderer evaluates `Message` during mounting or
+reconciliation.

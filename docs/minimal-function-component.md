@@ -27,9 +27,9 @@ The resulting DOM contains only the component's output:
 
 There is no component wrapper element.
 
-## Eager Expansion
+## Initial Eager Expansion
 
-The current call flow is deliberately small:
+The first implementation used this deliberately small call flow:
 
 ```text
 h(Message, { name: "Ada" }, [])
@@ -39,9 +39,9 @@ h(Message, { name: "Ada" }, [])
   -> render / mount / reconcile
 ```
 
-`Message` runs while the VNode tree is being created, before `render` receives
-the tree. The renderer therefore needs no new component branch: it sees only
-the returned element or text VNode.
+At that stage, `Message` ran while the VNode tree was being created, before
+`render` received the tree. The renderer needed no component branch and saw
+only the returned element or text VNode.
 
 This answers the first component-boundary question with a temporary minimal
 model: the component is a VNode-producing function, not a new VNode kind.
@@ -53,19 +53,36 @@ component has no independent identity. Reconciliation can preserve or replace
 the output DOM according to the returned VNode's existing rules, but it cannot
 associate state or lifecycle work with `Message` itself.
 
-This is enough to expose component evaluation without adding an internal
-component instance or Fiber-like structure. A later state lesson may show why
-retaining a component boundary becomes useful.
+This was enough to expose component evaluation without adding an internal
+component instance or Fiber-like structure.
+
+## Retained Boundary
+
+The state lessons exposed the missing identity, so the current implementation
+no longer expands the component inside `h`:
+
+```text
+h(Message, { name: "Ada" }, [])
+  -> ComponentVNode(Message, props)
+  -> render / mount
+  -> Message(props)
+  -> ElementVNode
+```
+
+The renderer now retains the component's previous output in a small internal
+component instance. See `retained-component-boundary.md` for the current
+behavior.
 
 ## Children Boundary
 
-Third-argument children are normalized before the component runs:
+Third-argument children are normalized before the `ComponentVNode` is created:
 
 ```ts
 h(Message, { name: "Ada" }, ["child"]);
-// Message receives:
+// vnode.props:
 // { name: "Ada", children: [{ type: "text", value: "child" }] }
 ```
 
 `children` is reserved for this normalized array. Supplying it directly inside
 the second argument is rejected so that there is only one child-input path.
+The component receives these retained props when the renderer evaluates it.

@@ -5,6 +5,7 @@ export { h } from "./vnode";
 export type { StateCell, StateListener } from "./state";
 export type {
   ComponentProps,
+  ComponentVNode,
   ElementProp,
   ElementProps,
   ElementVNode,

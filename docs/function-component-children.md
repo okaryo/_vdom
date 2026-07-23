@@ -23,7 +23,7 @@ h(Panel, { title: "Lesson" }, [
 ]);
 ```
 
-## Normalize Before Evaluation
+## Normalize Before Retention
 
 The same child normalization used for host elements runs before the component:
 
@@ -37,8 +37,9 @@ The same child normalization used for host elements runs before the component:
 ]
 ```
 
-The component therefore receives a canonical `VNode[]`. It does not need to
-understand primitive children, nested arrays, or omitted boolean and nullish
+The `ComponentVNode` therefore retains a canonical `VNode[]`, which the
+component receives when the renderer evaluates it. The component does not need
+to understand primitive children, nested arrays, or omitted boolean and nullish
 values.
 
 `h` creates a new props object instead of mutating the object supplied by the
@@ -54,27 +55,28 @@ const componentProps = {
 The name `children` is reserved. Passing it directly in the second argument is
 rejected so there is one unambiguous source of component children.
 
-## Eager Composition
+## Component Composition
 
 Components can return host VNodes containing their received children, and a
-child can itself be another eagerly expanded component:
+child can itself be another retained component:
 
 ```text
-h(Badge, ...) -> <span> output VNode
-                         |
-                         v
-h(Card, ..., [badge output, <p>])
-                         |
-                         v
-<article><span>...</span><p>...</p></article> VNode tree
+h(Card, ..., [h(Badge, ...), <p>])
+              |              |
+              v              v
+       ComponentVNode     ElementVNode
+              \              /
+               renderer evaluation
+                       |
+                       v
+ <article><span>...</span><p>...</p></article>
 ```
 
 The browser DOM contains only host elements. No `Card` or `Badge` wrapper node
 is created.
 
-Because expansion remains eager, this composition still does not retain a
-component tree or component-specific identity. It only constructs a larger
-ordinary VNode tree for the existing renderer.
+Each component boundary is retained for the renderer, while its browser DOM
+still consists only of the host and text nodes produced by those components.
 
 ## Props Shape Decision
 
