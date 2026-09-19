@@ -261,3 +261,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   a compatible component instance without adding a setter yet.
 - `docs/component-state-setter.md`: notes on updating the retained component
   value without automatically rerendering the DOM yet.
+- `docs/component-state-rerender.md`: notes on propagating a root render
+  context and synchronously rerendering after a component state update.

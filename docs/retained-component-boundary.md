@@ -46,6 +46,7 @@ The renderer associates each mounted `ComponentVNode` with a
 ```ts
 type ComponentInstance = {
   output: VNode | null;
+  context: RenderContext;
   stateSlot: {
     value: unknown;
     set(nextValue: unknown): void;
@@ -59,7 +60,8 @@ renderer can then reconcile the retained old output with the newly evaluated
 output. The output begins as `null` because the instance must now exist before
 its component is evaluated; the returned VNode is stored immediately after
 evaluation. The optional state slot retains one component-owned value across
-compatible evaluations.
+compatible evaluations. The render context connects that instance's setter to
+the root that owns it.
 
 This is not a Fiber implementation. It is only enough retained work state to
 make a component boundary and its previous output observable.

@@ -275,7 +275,7 @@ Questions to answer:
 - [x] Expose the current component instance during component evaluation.
 - [x] Store one state value on the current component instance.
 - [x] Return a setter that updates the stored component value.
-- [ ] Connect the component setter to synchronous root rerendering.
+- [x] Connect the component setter to synchronous root rerendering.
 - [ ] Preserve state according to component identity.
 - [ ] Decide behavior when multiple updates occur together.
 - [ ] Build a small counter or Todo example.
@@ -314,10 +314,17 @@ Current learning unit:
   the correct component value without consulting the current evaluation
   context later.
 - Compatible evaluations receive the same setter function reference.
-- Calling the setter changes stored state but deliberately leaves the current
-  DOM unchanged until application code explicitly renders again.
-- Automatic rerendering does not exist yet; `readState` remains an internal
-  learning helper rather than the final public `useState` API.
+- `render` creates a root-specific `RenderContext`, which `mount` and
+  `reconcile` propagate to nested component instances.
+- Calling the setter stores the next value and synchronously asks that context
+  to render the currently retained root VNode again.
+- Re-evaluation reads the new state from the retained instance, then existing
+  reconciliation updates the DOM while preserving compatible node identity.
+- Every setter currently renders the complete root immediately; equality
+  bailouts, update queues, batching, and render-phase updates remain
+  unsupported.
+- `readState` remains an internal learning helper rather than the final public
+  `useState` API.
 
 Questions to answer:
 

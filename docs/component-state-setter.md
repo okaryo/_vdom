@@ -65,6 +65,6 @@ explicit render
     -> update Text.data
 ```
 
-The next step will connect the setter to a root render request. Keeping that
-connection separate makes it visible that storing a value and scheduling UI
-work are different responsibilities.
+The following `component-state-rerender.md` lesson connects the setter to a
+root render request. Keeping that connection separate makes it visible that
+storing a value and scheduling UI work are different responsibilities.

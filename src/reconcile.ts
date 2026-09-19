@@ -1,6 +1,8 @@
 import {
+  detachedRenderContext,
   evaluateComponent,
   reuseComponentInstance,
+  type RenderContext,
 } from "./component-instance";
 import { mount } from "./mount";
 import { updateElementProps } from "./props";
@@ -25,7 +27,11 @@ function areCompatible(oldVNode: VNode, newVNode: VNode): boolean {
   return false;
 }
 
-function replaceVNode(newVNode: VNode, node: Node): Node {
+function replaceVNode(
+  newVNode: VNode,
+  node: Node,
+  context: RenderContext,
+): Node {
   const parent = node.parentNode;
 
   if (parent === null) {
@@ -33,7 +39,7 @@ function replaceVNode(newVNode: VNode, node: Node): Node {
   }
 
   const fragment = document.createDocumentFragment();
-  const newNode = mount(newVNode, fragment);
+  const newNode = mount(newVNode, fragment, context);
 
   parent.replaceChild(newNode, node);
 
@@ -44,6 +50,7 @@ function reconcileChildrenByPosition(
   oldChildren: VNode[],
   newChildren: VNode[],
   element: Element,
+  context: RenderContext,
 ): void {
   if (element.childNodes.length !== oldChildren.length) {
     throw new Error(
@@ -60,11 +67,16 @@ function reconcileChildrenByPosition(
       throw new Error(`Missing DOM child at position ${index}.`);
     }
 
-    reconcile(oldChildren[index], newChildren[index], childNode);
+    reconcile(
+      oldChildren[index],
+      newChildren[index],
+      childNode,
+      context,
+    );
   }
 
   for (let index = commonLength; index < newChildren.length; index += 1) {
-    mount(newChildren[index], element);
+    mount(newChildren[index], element, context);
   }
 
   while (element.childNodes.length > newChildren.length) {
@@ -82,9 +94,10 @@ export function reconcile(
   oldVNode: VNode,
   newVNode: VNode,
   node: Node,
+  context: RenderContext = detachedRenderContext,
 ): Node {
   if (!areCompatible(oldVNode, newVNode)) {
-    return replaceVNode(newVNode, node);
+    return replaceVNode(newVNode, node, context);
   }
 
   if (oldVNode.type === "text" && newVNode.type === "text") {
@@ -105,7 +118,11 @@ export function reconcile(
     oldVNode.type === "component" &&
     newVNode.type === "component"
   ) {
-    const instance = reuseComponentInstance(oldVNode, newVNode);
+    const instance = reuseComponentInstance(
+      oldVNode,
+      newVNode,
+      context,
+    );
     const oldOutput = instance.output;
 
     if (oldOutput === null) {
@@ -115,7 +132,7 @@ export function reconcile(
     }
 
     const newOutput = evaluateComponent(instance, newVNode);
-    const newNode = reconcile(oldOutput, newOutput, node);
+    const newNode = reconcile(oldOutput, newOutput, node, context);
 
     instance.output = newOutput;
 
@@ -140,6 +157,7 @@ export function reconcile(
     oldVNode.children,
     newVNode.children,
     node,
+    context,
   );
 
   return node;

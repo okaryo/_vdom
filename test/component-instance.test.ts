@@ -51,29 +51,32 @@ describe("component evaluation context", () => {
     expect(nextNode.firstChild).toBe(firstText);
   });
 
-  it("updates the stored value without rerendering automatically", () => {
+  it("synchronously rerenders the root after updating stored state", () => {
     const observedSetters: ComponentStateSetter<number>[] = [];
     const Counter: FunctionComponent = () => {
       const [count, setCount] = readState(0);
 
       observedSetters.push(setCount);
 
-      return h("p", {}, [`Count: ${count}`]);
+      return h("button", {}, [`Count: ${count}`]);
     };
     const container = document.createElement("div");
-    const firstNode = render(h(Counter, {}, []), container);
-    const firstText = firstNode.firstChild;
+    const firstRoot = render(
+      h("section", {}, [h(Counter, {}, [])]),
+      container,
+    );
+    const firstButton = firstRoot.firstChild;
+    const firstText = firstButton?.firstChild;
     const firstSetter = observedSetters[0];
 
     firstSetter(1);
 
-    expect(container.textContent).toBe("Count: 0");
-
-    const nextNode = render(h(Counter, {}, []), container);
-
-    expect(container.textContent).toBe("Count: 1");
-    expect(nextNode).toBe(firstNode);
-    expect(nextNode.firstChild).toBe(firstText);
+    expect(container.innerHTML).toBe(
+      "<section><button>Count: 1</button></section>",
+    );
+    expect(container.firstChild).toBe(firstRoot);
+    expect(firstRoot.firstChild).toBe(firstButton);
+    expect(firstButton?.firstChild).toBe(firstText);
     expect(observedSetters[1]).toBe(firstSetter);
   });
 });

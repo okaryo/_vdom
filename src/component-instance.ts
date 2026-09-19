@@ -2,6 +2,10 @@ import type { ComponentVNode, VNode } from "./vnode";
 
 export type ComponentStateSetter<Value> = (nextValue: Value) => void;
 
+export type RenderContext = {
+  requestRender(): void;
+};
+
 type ComponentStateSlot = {
   value: unknown;
   set: ComponentStateSetter<unknown>;
@@ -10,6 +14,15 @@ type ComponentStateSlot = {
 export type ComponentInstance = {
   output: VNode | null;
   stateSlot: ComponentStateSlot | null;
+  context: RenderContext;
+};
+
+export const detachedRenderContext: RenderContext = {
+  requestRender() {
+    throw new Error(
+      "Component state updates require a root created by render.",
+    );
+  },
 };
 
 const componentInstances = new WeakMap<
@@ -19,10 +32,12 @@ const componentInstances = new WeakMap<
 
 export function createComponentInstance(
   vnode: ComponentVNode,
+  context: RenderContext,
 ): ComponentInstance {
   const instance: ComponentInstance = {
     output: null,
     stateSlot: null,
+    context,
   };
 
   componentInstances.set(vnode, instance);
@@ -33,6 +48,7 @@ export function createComponentInstance(
 export function reuseComponentInstance(
   oldVNode: ComponentVNode,
   newVNode: ComponentVNode,
+  context: RenderContext,
 ): ComponentInstance {
   const instance = componentInstances.get(oldVNode);
 
@@ -42,6 +58,7 @@ export function reuseComponentInstance(
     );
   }
 
+  instance.context = context;
   componentInstances.set(newVNode, instance);
 
   return instance;
@@ -86,6 +103,7 @@ export function readState<Value>(
       value: initialValue,
       set(nextValue) {
         stateSlot.value = nextValue;
+        instance.context.requestRender();
       },
     };
 
