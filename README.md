@@ -255,3 +255,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   and composition with host elements and other components.
 - `docs/retained-component-boundary.md`: notes on `ComponentVNode`, the
   internal component instance, and function-based component identity.
+- `docs/component-evaluation-context.md`: notes on exposing the current
+  component instance only during synchronous component evaluation.

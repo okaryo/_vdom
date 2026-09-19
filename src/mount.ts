@@ -1,5 +1,8 @@
 import { applyInitialElementProps } from "./props";
-import { createComponentInstance } from "./component-instance";
+import {
+  createComponentInstance,
+  evaluateComponent,
+} from "./component-instance";
 import type { VNode } from "./vnode";
 
 export function mount(vnode: VNode, container: Node): Node {
@@ -12,9 +15,10 @@ export function mount(vnode: VNode, container: Node): Node {
   }
 
   if (vnode.type === "component") {
-    const output = vnode.component(vnode.props);
+    const instance = createComponentInstance(vnode);
+    const output = evaluateComponent(instance, vnode);
 
-    createComponentInstance(vnode, output);
+    instance.output = output;
 
     return mount(output, container);
   }

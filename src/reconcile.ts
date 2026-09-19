@@ -1,4 +1,7 @@
-import { reuseComponentInstance } from "./component-instance";
+import {
+  evaluateComponent,
+  reuseComponentInstance,
+} from "./component-instance";
 import { mount } from "./mount";
 import { updateElementProps } from "./props";
 import type { VNode } from "./vnode";
@@ -75,7 +78,11 @@ function reconcileChildrenByPosition(
   }
 }
 
-export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
+export function reconcile(
+  oldVNode: VNode,
+  newVNode: VNode,
+  node: Node,
+): Node {
   if (!areCompatible(oldVNode, newVNode)) {
     return replaceVNode(newVNode, node);
   }
@@ -100,11 +107,19 @@ export function reconcile(oldVNode: VNode, newVNode: VNode, node: Node): Node {
   ) {
     const instance = reuseComponentInstance(oldVNode, newVNode);
     const oldOutput = instance.output;
-    const newOutput = newVNode.component(newVNode.props);
+
+    if (oldOutput === null) {
+      throw new Error(
+        "The reused component instance has no previous output.",
+      );
+    }
+
+    const newOutput = evaluateComponent(instance, newVNode);
+    const newNode = reconcile(oldOutput, newOutput, node);
 
     instance.output = newOutput;
 
-    return reconcile(oldOutput, newOutput, node);
+    return newNode;
   }
 
   if (oldVNode.type !== "element" || newVNode.type !== "element") {

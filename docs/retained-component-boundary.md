@@ -45,14 +45,16 @@ The renderer associates each mounted `ComponentVNode` with a
 
 ```ts
 type ComponentInstance = {
-  output: VNode;
+  output: VNode | null;
 };
 ```
 
 The association is kept in a `WeakMap`. On a compatible update, the instance
 is transferred from the old component VNode to the new component VNode. The
 renderer can then reconcile the retained old output with the newly evaluated
-output.
+output. The output begins as `null` because the instance must now exist before
+its component is evaluated; the returned VNode is stored immediately after
+evaluation.
 
 This is not a Fiber implementation. It is only enough retained work state to
 make a component boundary and its previous output observable.

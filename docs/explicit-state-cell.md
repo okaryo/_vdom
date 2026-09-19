@@ -52,4 +52,4 @@ must provide.
 This cell is still application-owned rather than component-owned. It therefore
 does not yet answer which component owns a state value, how that value survives
 a rerender, or what happens when a component is removed. Those questions need
-component identity in a later learning unit.
+component identity and an evaluation context in later learning units.

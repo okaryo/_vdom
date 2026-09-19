@@ -272,6 +272,10 @@ Questions to answer:
 - [x] Add the smallest explicit state update mechanism.
 - [x] Trigger synchronous rerendering from a state change.
 - [x] Retain a component boundary that can carry component identity.
+- [x] Expose the current component instance during component evaluation.
+- [ ] Store one state value on the current component instance.
+- [ ] Return a setter that updates the stored component value.
+- [ ] Connect the component setter to synchronous root rerendering.
 - [ ] Preserve state according to component identity.
 - [ ] Decide behavior when multiple updates occur together.
 - [ ] Build a small counter or Todo example.
@@ -291,9 +295,17 @@ Current learning unit:
   remains in the cell.
 - Notifications currently run for every `set` call with no equality bailout,
   batching, queue, or reentrancy protection.
-- State remains application-owned, but compatible component VNodes now reuse a
-  small internal instance. That instance is the location where component-owned
-  state can survive repeated VNode creation in the next unit.
+- `evaluateComponent` temporarily records the instance whose function is
+  running, then restores the previous evaluation context in `finally`.
+- `getCurrentComponentInstance` exposes that instance only during component
+  evaluation. It is an internal prerequisite for a later `useState`, not a
+  public state API.
+- The module-level current-instance variable is a temporary synchronous cursor;
+  component data still does not live in that variable.
+- Component instances are created before evaluation with `output: null`, then
+  receive the returned VNode after the component finishes.
+- Compatible component VNodes already reuse this instance, but no
+  component-owned state value, setter, or automatic rerender exists yet.
 
 Questions to answer:
 
