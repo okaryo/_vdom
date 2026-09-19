@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   getCurrentComponentInstance,
-  readStateValue,
+  readState,
   type ComponentInstance,
+  type ComponentStateSetter,
 } from "../src/component-instance";
 import { h, render, type FunctionComponent } from "../src";
 
@@ -34,7 +35,7 @@ describe("component evaluation context", () => {
   it("reads the first state value stored on a retained instance", () => {
     let initialCount = 0;
     const Counter: FunctionComponent = () => {
-      const count = readStateValue(initialCount);
+      const [count] = readState(initialCount);
 
       return h("p", {}, [`Count: ${count}`]);
     };
@@ -48,5 +49,31 @@ describe("component evaluation context", () => {
     expect(container.textContent).toBe("Count: 0");
     expect(nextNode).toBe(firstNode);
     expect(nextNode.firstChild).toBe(firstText);
+  });
+
+  it("updates the stored value without rerendering automatically", () => {
+    const observedSetters: ComponentStateSetter<number>[] = [];
+    const Counter: FunctionComponent = () => {
+      const [count, setCount] = readState(0);
+
+      observedSetters.push(setCount);
+
+      return h("p", {}, [`Count: ${count}`]);
+    };
+    const container = document.createElement("div");
+    const firstNode = render(h(Counter, {}, []), container);
+    const firstText = firstNode.firstChild;
+    const firstSetter = observedSetters[0];
+
+    firstSetter(1);
+
+    expect(container.textContent).toBe("Count: 0");
+
+    const nextNode = render(h(Counter, {}, []), container);
+
+    expect(container.textContent).toBe("Count: 1");
+    expect(nextNode).toBe(firstNode);
+    expect(nextNode.firstChild).toBe(firstText);
+    expect(observedSetters[1]).toBe(firstSetter);
   });
 });

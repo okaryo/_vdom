@@ -1,7 +1,10 @@
 import type { ComponentVNode, VNode } from "./vnode";
 
+export type ComponentStateSetter<Value> = (nextValue: Value) => void;
+
 type ComponentStateSlot = {
   value: unknown;
+  set: ComponentStateSetter<unknown>;
 };
 
 export type ComponentInstance = {
@@ -73,14 +76,24 @@ export function getCurrentComponentInstance(): ComponentInstance {
   return instance;
 }
 
-export function readStateValue<Value>(initialValue: Value): Value {
+export function readState<Value>(
+  initialValue: Value,
+): [Value, ComponentStateSetter<Value>] {
   const instance = getCurrentComponentInstance();
 
   if (instance.stateSlot === null) {
-    instance.stateSlot = {
+    const stateSlot: ComponentStateSlot = {
       value: initialValue,
+      set(nextValue) {
+        stateSlot.value = nextValue;
+      },
     };
+
+    instance.stateSlot = stateSlot;
   }
 
-  return instance.stateSlot.value as Value;
+  return [
+    instance.stateSlot.value as Value,
+    instance.stateSlot.set as ComponentStateSetter<Value>,
+  ];
 }

@@ -46,7 +46,10 @@ The renderer associates each mounted `ComponentVNode` with a
 ```ts
 type ComponentInstance = {
   output: VNode | null;
-  stateSlot: { value: unknown } | null;
+  stateSlot: {
+    value: unknown;
+    set(nextValue: unknown): void;
+  } | null;
 };
 ```
 

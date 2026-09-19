@@ -259,3 +259,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   component instance only during synchronous component evaluation.
 - `docs/component-state-slot.md`: notes on retaining one initial state value on
   a compatible component instance without adding a setter yet.
+- `docs/component-state-setter.md`: notes on updating the retained component
+  value without automatically rerendering the DOM yet.

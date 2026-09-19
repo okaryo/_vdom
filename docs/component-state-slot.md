@@ -1,6 +1,7 @@
 # One Component State Slot
 
-The component instance now owns one optional state slot:
+In this learning step, the component instance first gained one optional state
+slot containing only a value:
 
 ```ts
 type ComponentInstance = {
@@ -9,7 +10,8 @@ type ComponentInstance = {
 };
 ```
 
-`readStateValue` uses the evaluation context from the previous step to find
+The initial `readStateValue` helper used the evaluation context from the
+previous step to find
 that instance:
 
 ```ts
@@ -53,13 +55,14 @@ without being confused with an uninitialized slot.
 
 ## Deliberate Limits
 
-`readStateValue` is an internal learning helper, not the final public API. It
-only reads the stored value:
+At this step, `readStateValue` was introduced only to read the stored value. The
+following `component-state-setter.md` lesson adds a setter to the same slot.
+The current code therefore calls the evolved helper `readState`, but it remains
+an internal learning API:
 
-- There is no setter.
 - It cannot trigger a rerender.
 - There is only one slot per component instance.
 - Multiple hook calls and hook ordering are not supported.
 
-The next step can add a setter to this same slot without also introducing
-storage and evaluation context at once.
+Separating the steps keeps storage, mutation, and render scheduling visible as
+different mechanisms.
