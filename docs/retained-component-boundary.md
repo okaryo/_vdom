@@ -46,6 +46,7 @@ The renderer associates each mounted `ComponentVNode` with a
 ```ts
 type ComponentInstance = {
   output: VNode | null;
+  stateSlot: { value: unknown } | null;
 };
 ```
 
@@ -54,7 +55,8 @@ is transferred from the old component VNode to the new component VNode. The
 renderer can then reconcile the retained old output with the newly evaluated
 output. The output begins as `null` because the instance must now exist before
 its component is evaluated; the returned VNode is stored immediately after
-evaluation.
+evaluation. The optional state slot retains one component-owned value across
+compatible evaluations.
 
 This is not a Fiber implementation. It is only enough retained work state to
 make a component boundary and its previous output observable.

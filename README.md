@@ -257,3 +257,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   internal component instance, and function-based component identity.
 - `docs/component-evaluation-context.md`: notes on exposing the current
   component instance only during synchronous component evaluation.
+- `docs/component-state-slot.md`: notes on retaining one initial state value on
+  a compatible component instance without adding a setter yet.

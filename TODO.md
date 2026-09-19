@@ -273,7 +273,7 @@ Questions to answer:
 - [x] Trigger synchronous rerendering from a state change.
 - [x] Retain a component boundary that can carry component identity.
 - [x] Expose the current component instance during component evaluation.
-- [ ] Store one state value on the current component instance.
+- [x] Store one state value on the current component instance.
 - [ ] Return a setter that updates the stored component value.
 - [ ] Connect the component setter to synchronous root rerendering.
 - [ ] Preserve state according to component identity.
@@ -304,8 +304,14 @@ Current learning unit:
   component data still does not live in that variable.
 - Component instances are created before evaluation with `output: null`, then
   receive the returned VNode after the component finishes.
-- Compatible component VNodes already reuse this instance, but no
-  component-owned state value, setter, or automatic rerender exists yet.
+- `readStateValue` creates one state slot on the current instance during its
+  first evaluation and returns the retained value on compatible evaluations.
+- The state slot object separates an absent slot from valid `undefined` or
+  `null` state values.
+- The stored value now belongs to the component instance rather than the
+  disposable VNode or module-level current-instance cursor.
+- No setter or automatic rerender exists yet; `readStateValue` is an internal
+  learning helper rather than the final public `useState` API.
 
 Questions to answer:
 

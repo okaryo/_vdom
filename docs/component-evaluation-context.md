@@ -58,6 +58,7 @@ store the returned VNode as instance.output
 Reconciliation still retains the same instance when the component function and
 tree position remain compatible.
 
-There is deliberately no `useState`, state slot, setter, or automatic rerender
-in this step. The next step can add one stored value without also having to
-introduce the evaluation context at the same time.
+This step deliberately introduced no state slot, setter, or automatic
+rerender. The following `component-state-slot.md` lesson adds one stored value
+using this evaluation context, while still leaving setters and rerendering for
+later steps.

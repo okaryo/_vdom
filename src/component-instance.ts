@@ -1,7 +1,12 @@
 import type { ComponentVNode, VNode } from "./vnode";
 
+type ComponentStateSlot = {
+  value: unknown;
+};
+
 export type ComponentInstance = {
   output: VNode | null;
+  stateSlot: ComponentStateSlot | null;
 };
 
 const componentInstances = new WeakMap<
@@ -14,6 +19,7 @@ export function createComponentInstance(
 ): ComponentInstance {
   const instance: ComponentInstance = {
     output: null,
+    stateSlot: null,
   };
 
   componentInstances.set(vnode, instance);
@@ -65,4 +71,16 @@ export function getCurrentComponentInstance(): ComponentInstance {
   }
 
   return instance;
+}
+
+export function readStateValue<Value>(initialValue: Value): Value {
+  const instance = getCurrentComponentInstance();
+
+  if (instance.stateSlot === null) {
+    instance.stateSlot = {
+      value: initialValue,
+    };
+  }
+
+  return instance.stateSlot.value as Value;
 }
