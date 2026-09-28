@@ -78,6 +78,6 @@ instance.
 - Stateful updates from standalone `mount` are unsupported because there is no
   retained root to render.
 
-The next step can focus only on observing when this state and setter are
-preserved or reset by component identity. That final focused step is documented
-in `component-state-identity.md`.
+State and setter preservation are documented in
+`component-state-identity.md`. The behavior of consecutive setter calls is
+documented in `component-state-multiple-updates.md`.

@@ -277,7 +277,7 @@ Questions to answer:
 - [x] Return a setter that updates the stored component value.
 - [x] Connect the component setter to synchronous root rerendering.
 - [x] Preserve state according to component identity.
-- [ ] Decide behavior when multiple updates occur together.
+- [x] Decide behavior when multiple updates occur together.
 - [ ] Build a small counter or Todo example.
 
 Current learning unit:
@@ -331,6 +331,12 @@ Current learning unit:
   fresh state slot, even if both component outputs use the same host tag.
 - This temporary fine-grained `useState` sequence is complete; subsequent
   roadmap work returns to the project's normal learning-unit size.
+- Consecutive setter calls currently perform separate synchronous root renders,
+  making each intermediate state observable before the next call begins.
+- The value-only setter does not change variables captured by an earlier
+  component evaluation; updater functions remain a separate future decision.
+- This unbatched behavior is the explicit baseline for later work on update
+  queues and batching.
 
 Questions to answer:
 

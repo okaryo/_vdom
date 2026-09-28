@@ -94,6 +94,35 @@ describe("component evaluation context", () => {
     expect(observedSetters[2]).toBe(firstSetter);
   });
 
+  it("rerenders synchronously for every consecutive state update", () => {
+    const observedCounts: number[] = [];
+    const observedSetters: ComponentStateSetter<number>[] = [];
+    const Counter: FunctionComponent = () => {
+      const [count, setCount] = useState(0);
+
+      observedCounts.push(count);
+      observedSetters.push(setCount);
+
+      return h("p", {}, [`Count: ${count}`]);
+    };
+    const container = document.createElement("div");
+    const firstNode = render(h(Counter, {}, []), container);
+    const firstText = firstNode.firstChild;
+    const setCount = observedSetters[0];
+
+    setCount(1);
+
+    expect(observedCounts).toEqual([0, 1]);
+    expect(container.textContent).toBe("Count: 1");
+
+    setCount(2);
+
+    expect(observedCounts).toEqual([0, 1, 2]);
+    expect(container.textContent).toBe("Count: 2");
+    expect(container.firstChild).toBe(firstNode);
+    expect(firstNode.firstChild).toBe(firstText);
+  });
+
   it("initializes fresh state when the component function changes", () => {
     const firstSetters: ComponentStateSetter<number>[] = [];
     const FirstCounter: FunctionComponent = () => {

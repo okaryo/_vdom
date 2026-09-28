@@ -265,3 +265,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   context and synchronously rerendering after a component state update.
 - `docs/component-state-identity.md`: notes on preserving or resetting minimal
   `useState` data according to component function and tree position.
+- `docs/component-state-multiple-updates.md`: notes on the current unbatched,
+  synchronous behavior of consecutive component state updates.
