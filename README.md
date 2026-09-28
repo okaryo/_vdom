@@ -263,3 +263,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   value without automatically rerendering the DOM yet.
 - `docs/component-state-rerender.md`: notes on propagating a root render
   context and synchronously rerendering after a component state update.
+- `docs/component-state-identity.md`: notes on preserving or resetting minimal
+  `useState` data according to component function and tree position.

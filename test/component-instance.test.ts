@@ -2,11 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import {
   getCurrentComponentInstance,
-  readState,
   type ComponentInstance,
-  type ComponentStateSetter,
 } from "../src/component-instance";
-import { h, render, type FunctionComponent } from "../src";
+import {
+  h,
+  render,
+  useState,
+  type ComponentStateSetter,
+  type FunctionComponent,
+} from "../src";
 
 describe("component evaluation context", () => {
   it("exposes the retained instance only while its component is evaluated", () => {
@@ -35,7 +39,7 @@ describe("component evaluation context", () => {
   it("reads the first state value stored on a retained instance", () => {
     let initialCount = 0;
     const Counter: FunctionComponent = () => {
-      const [count] = readState(initialCount);
+      const [count] = useState(initialCount);
 
       return h("p", {}, [`Count: ${count}`]);
     };
@@ -54,7 +58,7 @@ describe("component evaluation context", () => {
   it("synchronously rerenders the root after updating stored state", () => {
     const observedSetters: ComponentStateSetter<number>[] = [];
     const Counter: FunctionComponent = () => {
-      const [count, setCount] = readState(0);
+      const [count, setCount] = useState(0);
 
       observedSetters.push(setCount);
 
@@ -78,5 +82,42 @@ describe("component evaluation context", () => {
     expect(firstRoot.firstChild).toBe(firstButton);
     expect(firstButton?.firstChild).toBe(firstText);
     expect(observedSetters[1]).toBe(firstSetter);
+
+    const nextRoot = render(
+      h("section", {}, [h(Counter, {}, [])]),
+      container,
+    );
+
+    expect(container.textContent).toBe("Count: 1");
+    expect(nextRoot).toBe(firstRoot);
+    expect(nextRoot.firstChild).toBe(firstButton);
+    expect(observedSetters[2]).toBe(firstSetter);
+  });
+
+  it("initializes fresh state when the component function changes", () => {
+    const firstSetters: ComponentStateSetter<number>[] = [];
+    const FirstCounter: FunctionComponent = () => {
+      const [count, setCount] = useState(0);
+
+      firstSetters.push(setCount);
+
+      return h("p", {}, [`First: ${count}`]);
+    };
+    const SecondCounter: FunctionComponent = () => {
+      const [count] = useState(10);
+
+      return h("p", {}, [`Second: ${count}`]);
+    };
+    const container = document.createElement("div");
+    const firstNode = render(h(FirstCounter, {}, []), container);
+
+    firstSetters[0](1);
+
+    expect(container.textContent).toBe("First: 1");
+
+    const secondNode = render(h(SecondCounter, {}, []), container);
+
+    expect(container.textContent).toBe("Second: 10");
+    expect(secondNode).not.toBe(firstNode);
   });
 });

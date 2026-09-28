@@ -9,14 +9,14 @@ type ComponentStateSlot = {
 };
 ```
 
-The internal `readState` helper returns them as a pair:
+At this stage, the internal `readState` helper returned them as a pair:
 
 ```ts
 const [count, setCount] = readState(0);
 ```
 
-This begins to resemble the public shape of `useState`, but it is still an
-internal learning API.
+This began to resemble the public shape of `useState`; the later identity
+lesson exposes that final name after completing the render connection.
 
 ## The Setter Closes Over The Slot
 

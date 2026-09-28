@@ -93,7 +93,7 @@ export function getCurrentComponentInstance(): ComponentInstance {
   return instance;
 }
 
-export function readState<Value>(
+export function useState<Value>(
   initialValue: Value,
 ): [Value, ComponentStateSetter<Value>] {
   const instance = getCurrentComponentInstance();

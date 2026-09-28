@@ -57,8 +57,7 @@ without being confused with an uninitialized slot.
 
 At this step, `readStateValue` was introduced only to read the stored value. The
 following `component-state-setter.md` lesson adds a setter to the same slot.
-The current code therefore calls the evolved helper `readState`, but it remains
-an internal learning API:
+Later lessons evolve this helper into the public `useState` API:
 
 - It cannot trigger a rerender.
 - There is only one slot per component instance.

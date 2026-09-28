@@ -79,4 +79,5 @@ instance.
   retained root to render.
 
 The next step can focus only on observing when this state and setter are
-preserved or reset by component identity.
+preserved or reset by component identity. That final focused step is documented
+in `component-state-identity.md`.

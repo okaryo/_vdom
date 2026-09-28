@@ -276,7 +276,7 @@ Questions to answer:
 - [x] Store one state value on the current component instance.
 - [x] Return a setter that updates the stored component value.
 - [x] Connect the component setter to synchronous root rerendering.
-- [ ] Preserve state according to component identity.
+- [x] Preserve state according to component identity.
 - [ ] Decide behavior when multiple updates occur together.
 - [ ] Build a small counter or Todo example.
 
@@ -304,8 +304,8 @@ Current learning unit:
   component data still does not live in that variable.
 - Component instances are created before evaluation with `output: null`, then
   receive the returned VNode after the component finishes.
-- `readState` creates one state slot on the current instance during its first
-  evaluation and returns the retained value on compatible evaluations.
+- The state reader creates one state slot on the current instance during its
+  first evaluation and returns the retained value on compatible evaluations.
 - The state slot object separates an absent slot from valid `undefined` or
   `null` state values.
 - The stored value now belongs to the component instance rather than the
@@ -323,8 +323,14 @@ Current learning unit:
 - Every setter currently renders the complete root immediately; equality
   bailouts, update queues, batching, and render-phase updates remain
   unsupported.
-- `readState` remains an internal learning helper rather than the final public
-  `useState` API.
+- The completed minimal path is now exposed as `useState` with one state slot
+  per component instance and a value-only setter.
+- Recreating VNodes with the same component function at the same position
+  reuses the instance, preserving its state value and setter reference.
+- Replacing the component function creates a fresh instance and initializes a
+  fresh state slot, even if both component outputs use the same host tag.
+- This temporary fine-grained `useState` sequence is complete; subsequent
+  roadmap work returns to the project's normal learning-unit size.
 
 Questions to answer:
 
