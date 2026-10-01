@@ -351,12 +351,25 @@ Questions to answer:
 
 ### 7. Keyed Child Reconciliation
 
-- [ ] Add keys to Virtual Nodes.
+- [x] Add keys to Virtual Nodes.
 - [ ] Match old and new children by key.
 - [ ] Insert and remove keyed children.
 - [ ] Move existing DOM nodes when order changes.
 - [ ] Compare keyed behavior with positional reconciliation.
 - [ ] Test state and DOM identity across list reordering.
+
+Current learning unit:
+
+- `VNodeKey` is a string or number stored as optional VNode metadata.
+- `h(type, props, children, key)` accepts the key as an explicit fourth
+  argument, keeping it separate from DOM attributes and component props.
+- Element, component, and explicitly constructed text VNodes can carry keys;
+  text children normalized from primitives remain unkeyed.
+- This step only represents identity. Reconciliation still matches by position
+  and does not yet inspect keys, preserve identity across moves, or reject
+  duplicate sibling keys.
+- The next unit will connect this metadata to child matching. A key will be
+  scoped to siblings under one parent, with node type still determining reuse.
 
 Questions to answer:
 

@@ -8,8 +8,11 @@ export type ElementProps = Record<string, ElementProp>;
 
 export type ComponentProps = Record<string, unknown>;
 
+export type VNodeKey = string | number;
+
 export type ElementVNode = {
   type: "element";
+  key?: VNodeKey;
   tagName: string;
   props: ElementProps;
   children: VNode[];
@@ -17,6 +20,7 @@ export type ElementVNode = {
 
 export type TextVNode = {
   type: "text";
+  key?: VNodeKey;
   value: string;
 };
 
@@ -32,6 +36,7 @@ export type ComponentVNode<
   Props extends ComponentProps = ComponentProps,
 > = {
   type: "component";
+  key?: VNodeKey;
   component: FunctionComponent<Props>;
   props: PropsWithChildren<Props>;
 };
@@ -85,18 +90,22 @@ export function h(
   tagName: string,
   props: ElementProps,
   children: VNodeChild[],
+  key?: VNodeKey,
 ): ElementVNode;
 export function h<Props extends ComponentProps>(
   component: FunctionComponent<Props>,
   props: Props,
   children: VNodeChild[],
+  key?: VNodeKey,
 ): ComponentVNode<Props>;
 export function h<Props extends ComponentProps>(
   type: string | FunctionComponent<Props>,
   props: ElementProps | Props,
   children: VNodeChild[],
+  key?: VNodeKey,
 ): VNode {
   const normalizedChildren = normalizeChildren(children);
+  const identity = key === undefined ? {} : { key };
 
   if (typeof type === "function") {
     if (Array.isArray(props)) {
@@ -113,6 +122,7 @@ export function h<Props extends ComponentProps>(
 
     return {
       type: "component",
+      ...identity,
       component: type,
       props: {
         ...props,
@@ -123,6 +133,7 @@ export function h<Props extends ComponentProps>(
 
   return {
     type: "element",
+    ...identity,
     tagName: type,
     props: props as ElementProps,
     children: normalizedChildren,

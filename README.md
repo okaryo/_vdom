@@ -271,3 +271,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   synchronous behavior of consecutive component state updates.
 - `docs/use-state-counter-example.md`: a walkthrough of the complete
   event-to-state-to-DOM path in the Counter example.
+- `docs/vnode-keys.md`: notes on representing keys as VNode metadata before
+  using them for child reconciliation.

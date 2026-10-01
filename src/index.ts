@@ -18,4 +18,5 @@ export type {
   TextVNode,
   VNode,
   VNodeChild,
+  VNodeKey,
 } from "./vnode";

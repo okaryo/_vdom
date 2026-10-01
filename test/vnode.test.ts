@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   h,
+  render,
   type ComponentProps,
   type FunctionComponent,
   type TextVNode,
@@ -46,6 +47,39 @@ describe("h", () => {
       child,
     ]);
     expect(vnode.children[2]).toBe(child);
+  });
+
+  it("keeps an element key on the VNode without creating an HTML attribute", () => {
+    const props = { id: "item-a" };
+    const vnode = h("li", props, ["Ada"], "user-a");
+    const container = document.createElement("div");
+
+    render(vnode, container);
+
+    expect(vnode.key).toBe("user-a");
+    expect(vnode.props).toEqual({ id: "item-a" });
+    expect(props).toEqual({ id: "item-a" });
+    expect(container.innerHTML).toBe('<li id="item-a">Ada</li>');
+  });
+
+  it("accepts zero as a numeric key and leaves unkeyed VNodes unchanged", () => {
+    expect(h("li", {}, ["First"], 0).key).toBe(0);
+    expect(Object.hasOwn(h("li", {}, ["First"]), "key")).toBe(false);
+  });
+
+  it("keeps a component key separate from the props passed to its function", () => {
+    type MessageProps = { name: string };
+    const component: FunctionComponent<MessageProps> = vi.fn(
+      ({ name }) => h("p", {}, [name]),
+    );
+    const vnode = h(component, { name: "Ada" }, [], "user-a");
+    const container = document.createElement("div");
+
+    render(vnode, container);
+
+    expect(vnode.key).toBe("user-a");
+    expect(component).toHaveBeenCalledWith({ name: "Ada", children: [] });
+    expect(container.innerHTML).toBe("<p>Ada</p>");
   });
 
   it("omits null, undefined, and boolean children", () => {
