@@ -278,7 +278,7 @@ Questions to answer:
 - [x] Connect the component setter to synchronous root rerendering.
 - [x] Preserve state according to component identity.
 - [x] Decide behavior when multiple updates occur together.
-- [ ] Build a small counter or Todo example.
+- [x] Build a small counter or Todo example.
 
 Current learning unit:
 
@@ -337,6 +337,11 @@ Current learning unit:
   component evaluation; updater functions remain a separate future decision.
 - This unbatched behavior is the explicit baseline for later work on update
   queues and batching.
+- `examples/counter.ts` now joins the public `h`, `render`, and `useState` APIs
+  in one complete event-to-state-to-DOM example.
+- Each click uses the handler from the current component evaluation, performs a
+  synchronous state update, replaces the listener, and reuses the compatible
+  button and Text DOM nodes.
 
 Questions to answer:
 

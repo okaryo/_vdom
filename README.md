@@ -211,6 +211,8 @@ added, replaced, or removed without accumulating listeners on reused elements.
 - `AGENTS.md`: working instructions for AI agents and future contributors.
 - `LEARNING_PROJECT.md`: reusable AI-assisted learning project pattern.
 - `TODO.md`: living learning roadmap and progress tracker.
+- `examples/counter.ts`: a complete public-API example connecting a click,
+  component-owned state, synchronous rerendering, and DOM reuse.
 - `docs/initial-element-mount.md`: notes on the first
   Virtual-Node-to-DOM lifecycle.
 - `docs/text-node-mount.md`: notes on text nodes and discriminated Virtual Node
@@ -267,3 +269,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   `useState` data according to component function and tree position.
 - `docs/component-state-multiple-updates.md`: notes on the current unbatched,
   synchronous behavior of consecutive component state updates.
+- `docs/use-state-counter-example.md`: a walkthrough of the complete
+  event-to-state-to-DOM path in the Counter example.
