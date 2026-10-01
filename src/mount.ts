@@ -1,4 +1,5 @@
 import { applyInitialElementProps } from "./props";
+import { validateKeyedChildren } from "./child-keys";
 import {
   createComponentInstance,
   detachedRenderContext,
@@ -27,6 +28,10 @@ export function mount(
     instance.output = output;
 
     return mount(output, container, context);
+  }
+
+  if (vnode.children.some((child) => child.key !== undefined)) {
+    validateKeyedChildren(vnode.children);
   }
 
   const element = document.createElement(vnode.tagName);

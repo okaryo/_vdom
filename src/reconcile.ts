@@ -5,10 +5,15 @@ import {
   type RenderContext,
 } from "./component-instance";
 import { mount } from "./mount";
+import { validateKeyedChildren } from "./child-keys";
 import { updateElementProps } from "./props";
-import type { VNode } from "./vnode";
+import type { VNode, VNodeKey } from "./vnode";
 
 function areCompatible(oldVNode: VNode, newVNode: VNode): boolean {
+  if (oldVNode.key !== newVNode.key) {
+    return false;
+  }
+
   if (oldVNode.type === "text" && newVNode.type === "text") {
     return true;
   }
@@ -90,6 +95,48 @@ function reconcileChildrenByPosition(
   }
 }
 
+function reconcileChildrenByKey(
+  oldChildren: VNode[],
+  newChildren: VNode[],
+  element: Element,
+  context: RenderContext,
+): void {
+  validateKeyedChildren(oldChildren);
+  validateKeyedChildren(newChildren);
+
+  if (element.childNodes.length !== oldChildren.length) {
+    throw new Error(
+      "The retained element DOM does not match the old VNode child count.",
+    );
+  }
+
+  const oldNodes = Array.from(element.childNodes);
+  const oldChildrenByKey = new Map<VNodeKey, { vnode: VNode; node: Node }>();
+
+  oldChildren.forEach((vnode, index) => {
+    oldChildrenByKey.set(vnode.key!, { vnode, node: oldNodes[index] });
+  });
+
+  newChildren.forEach((vnode, index) => {
+    const match = oldChildrenByKey.get(vnode.key!);
+    const node = match === undefined
+      ? mount(vnode, element, context)
+      : reconcile(match.vnode, vnode, match.node, context);
+
+    oldChildrenByKey.delete(vnode.key!);
+
+    const nodeAtPosition = element.childNodes.item(index);
+
+    if (node !== nodeAtPosition) {
+      element.insertBefore(node, nodeAtPosition);
+    }
+  });
+
+  for (const { node } of oldChildrenByKey.values()) {
+    element.removeChild(node);
+  }
+}
+
 export function reconcile(
   oldVNode: VNode,
   newVNode: VNode,
@@ -153,7 +200,14 @@ export function reconcile(
 
   updateElementProps(oldVNode.props, newVNode.props, node);
 
-  reconcileChildrenByPosition(
+  const hasKeys = [...oldVNode.children, ...newVNode.children].some(
+    (child) => child.key !== undefined,
+  );
+  const reconcileChildren = hasKeys
+    ? reconcileChildrenByKey
+    : reconcileChildrenByPosition;
+
+  reconcileChildren(
     oldVNode.children,
     newVNode.children,
     node,

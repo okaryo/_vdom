@@ -82,12 +82,14 @@ requiring a production-sized DOM property catalog.
 ## Tree Shape And Identity
 
 One `VNode` produces one root DOM node. Empty roots, fragments, portals, and
-multiple root nodes are unsupported. Children are matched only by position;
-there are no keys or move operations yet.
+multiple root nodes are unsupported. Unkeyed children are matched by position.
+Fully keyed sibling lists are matched by key and moved with `insertBefore`.
+Duplicate keys, mixed keyed/unkeyed siblings, and direct transitions between
+nonempty keyed and unkeyed lists are rejected.
 
-Two elements are currently compatible when their tag names match. Compatibility
-does not account for namespaces or keys because those
-concepts are not represented yet.
+Two elements are compatible when their keys and tag names match. Component
+compatibility likewise requires matching keys and component functions.
+Namespaces are not represented yet.
 
 ## Non-Transactional Updates
 

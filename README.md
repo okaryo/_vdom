@@ -128,9 +128,9 @@ pnpm test
 ## Running the Current Renderer
 
 The current implementation can render an initial Virtual Node tree and
-reconcile compatible element children by position. It reuses compatible DOM
-nodes, updates text in place, appends and removes trailing children, and replaces
-incompatible nodes.
+reconcile element children by position or by key. It reuses compatible DOM
+nodes, updates text in place, inserts and removes children, moves keyed nodes,
+and replaces incompatible nodes.
 
 ```ts
 import { h, render } from "./src";
@@ -191,9 +191,10 @@ props named `on<Event>` are attached with `addEventListener`. `mount` is the
 stateless operation that creates and appends DOM nodes recursively. `render`
 uses it for the first render, then
 retains the root VNode and DOM node for that container. During subsequent
-renders, compatible element children at the same index are reconciled
-recursively. New trailing children are mounted, surplus trailing children are
-removed, and incompatible nodes are replaced. Compatible text nodes retain
+renders, unkeyed children at the same index are reconciled recursively. Fully
+keyed sibling lists are matched by key and reordered using existing DOM nodes.
+New children are mounted, unmatched children are removed, and incompatible
+nodes are replaced. Compatible text nodes retain
 their identity and update only `Text.data`. String attributes are added,
 updated, or removed on reused elements. The renderer maps the VNode prop
 `className` to the HTML attribute `class`. The `value` prop on `input` and
@@ -273,3 +274,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   event-to-state-to-DOM path in the Counter example.
 - `docs/vnode-keys.md`: notes on representing keys as VNode metadata before
   using them for child reconciliation.
+- `docs/keyed-child-reconciliation.md`: notes on matching, moving, inserting,
+  and removing keyed children using a snapshot of old DOM nodes.

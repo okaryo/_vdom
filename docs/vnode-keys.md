@@ -44,13 +44,12 @@ Element, component, and explicitly constructed text VNodes now have an optional
 `key` field. Existing unkeyed `h` calls keep their previous object shape.
 Primitive text children are still normalized into unkeyed text VNodes.
 
-Reconciliation currently continues to match children by array position. Adding
-a key alone therefore does not yet preserve a child's DOM or component state
-when it moves. Even changing a key currently has no effect on compatibility.
-The next learning unit will make child matching consume this metadata.
+The initial key lesson added metadata while keeping positional matching.
+The subsequent implementation now consumes keys for fully keyed sibling lists;
+see `keyed-child-reconciliation.md` for the matching and DOM mutation path.
 
-The intended scope is the sibling list under a single parent: separate parents
-can use the same key. Matching a key will locate a candidate old child; its
-element tag or component function must also be compatible for reuse. Duplicate
-keys and mixed keyed/unkeyed children will need explicit decisions when that
-matching behavior is implemented.
+The scope is the sibling list under a single parent: separate parents can use
+the same key. Matching a key locates a candidate old child; its element tag or
+component function must also be compatible for reuse. Duplicate sibling keys
+and mixed keyed/unkeyed lists are rejected. Changing a VNode's key now also
+makes it incompatible, including at the root.

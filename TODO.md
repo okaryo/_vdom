@@ -352,9 +352,9 @@ Questions to answer:
 ### 7. Keyed Child Reconciliation
 
 - [x] Add keys to Virtual Nodes.
-- [ ] Match old and new children by key.
-- [ ] Insert and remove keyed children.
-- [ ] Move existing DOM nodes when order changes.
+- [x] Match old and new children by key.
+- [x] Insert and remove keyed children.
+- [x] Move existing DOM nodes when order changes.
 - [ ] Compare keyed behavior with positional reconciliation.
 - [ ] Test state and DOM identity across list reordering.
 
@@ -365,11 +365,20 @@ Current learning unit:
   argument, keeping it separate from DOM attributes and component props.
 - Element, component, and explicitly constructed text VNodes can carry keys;
   text children normalized from primitives remain unkeyed.
-- This step only represents identity. Reconciliation still matches by position
-  and does not yet inspect keys, preserve identity across moves, or reject
-  duplicate sibling keys.
-- The next unit will connect this metadata to child matching. A key will be
-  scoped to siblings under one parent, with node type still determining reuse.
+- Keyed reconciliation snapshots the old DOM children and maps each key to
+  its old VNode and DOM node before any moves occur.
+- Matching keys select candidate old children; compatible types reuse nodes,
+  while incompatible types are replaced by the existing reconciliation path.
+- `insertBefore` places reused or newly mounted nodes in the requested order.
+  Old children with unmatched keys are removed after the new list is processed.
+- Fully unkeyed lists keep positional matching. Keyed lists require a unique
+  key on every sibling, including on initial mount; mixed lists are rejected.
+- Changing between nonempty keyed and unkeyed lists is also rejected. An empty
+  list can transition to either mode. Keys are scoped to one sibling list;
+  numeric and string keys are distinct.
+- VNode compatibility now also checks key equality, including at the root.
+- The next unit will compare positional and keyed component-state identity
+  across list reordering.
 
 Questions to answer:
 
