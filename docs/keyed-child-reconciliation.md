@@ -71,5 +71,6 @@ non-transactional, and removing components does not yet add lifecycle cleanup
 or deactivate retained setters.
 
 The tests cover DOM identity during repeated reorderings, insertion, removal,
-and incompatible tag replacement. The next lesson will examine component state
-and contrast it with positional matching.
+and incompatible tag replacement. The subsequent lesson in
+`keyed-component-state.md` examines component state and contrasts it with
+positional matching.

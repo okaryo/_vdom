@@ -355,8 +355,8 @@ Questions to answer:
 - [x] Match old and new children by key.
 - [x] Insert and remove keyed children.
 - [x] Move existing DOM nodes when order changes.
-- [ ] Compare keyed behavior with positional reconciliation.
-- [ ] Test state and DOM identity across list reordering.
+- [x] Compare keyed behavior with positional reconciliation.
+- [x] Test state and DOM identity across list reordering.
 
 Current learning unit:
 
@@ -377,8 +377,14 @@ Current learning unit:
   list can transition to either mode. Keys are scoped to one sibling list;
   numeric and string keys are distinct.
 - VNode compatibility now also checks key equality, including at the root.
-- The next unit will compare positional and keyed component-state identity
-  across list reordering.
+- Reordering the same stateful list now has comparison tests for stable ID
+  keys, no keys, and array-index keys. Stable IDs preserve each item's instance
+  and DOM across moves; the other modes preserve state at the same position.
+- A second click after reordering verifies that the updated event handler and
+  owning root context still work. The key belongs on the component VNode that
+  participates in the sibling matching, not just on its returned host element.
+- The keyed reconciliation section is complete. The next unit begins JSX by
+  inspecting the JavaScript produced from a small expression.
 
 Questions to answer:
 

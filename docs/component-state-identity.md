@@ -16,7 +16,7 @@ particular retained `ComponentInstance` at a reconciled tree position.
 ## Preserving State
 
 Component VNodes are compatible when they contain the same component function
-at a position already matched by positional reconciliation:
+at a position already matched by positional reconciliation, with matching keys:
 
 ```text
 old: position 0 -> Counter -> instance A, state 1
@@ -66,7 +66,8 @@ It intentionally remains much narrower than React's API:
 - The setter accepts a value, not an updater function.
 - Every setter call synchronously rerenders the complete root.
 - There is no equality bailout, queue, batching, or render-phase update model.
-- State identity is positional because keys are not implemented yet.
+- Unkeyed state identity is positional. Keyed sibling lists can retain the
+  instance when an item moves; see `keyed-component-state.md`.
 
 With this path visible end to end, later state work can return to the project's
 normal learning-unit size.

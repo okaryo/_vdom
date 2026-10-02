@@ -276,3 +276,5 @@ added, replaced, or removed without accumulating listeners on reused elements.
   using them for child reconciliation.
 - `docs/keyed-child-reconciliation.md`: notes on matching, moving, inserting,
   and removing keyed children using a snapshot of old DOM nodes.
+- `docs/keyed-component-state.md`: a comparison of state and DOM identity
+  across reordering with stable keys, no keys, and array-index keys.
