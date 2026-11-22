@@ -1,6 +1,8 @@
 import { jsx, type FunctionComponent } from "../../src";
 
-const Greeting: FunctionComponent<{ name: string }> = ({ name }) => <p>{name}</p>;
+export const Greeting: FunctionComponent<{ name: string }> = ({ name }) => (
+  <p>{name}</p>
+);
 
 const name = "Ada";
 

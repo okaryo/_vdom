@@ -14,7 +14,9 @@ pnpm jsx:inspect
 ```tsx
 import { jsx, type FunctionComponent } from "../../src";
 
-const Greeting: FunctionComponent<{ name: string }> = ({ name }) => <p>{name}</p>;
+export const Greeting: FunctionComponent<{ name: string }> = ({ name }) => (
+  <p>{name}</p>
+);
 const name = "Ada";
 
 export const element = <p className="message">Hello, {name}</p>;
@@ -27,7 +29,7 @@ names the function used in the generated calls.
 
 ```js
 import { jsx } from "../../src";
-const Greeting = ({ name }) => jsx("p", null, name);
+export const Greeting = ({ name }) => (jsx("p", null, name));
 const name = "Ada";
 export const element = jsx("p", { className: "message" },
     "Hello, ",
@@ -75,9 +77,9 @@ build the VNode supplied to `render`.
 ## Inspection Scope
 
 The inspection command prints the source and generated JavaScript and cleans up
-its temporary output. `test/jsx.test.ts` imports the same TSX specimen and
-renders both exports. Vitest uses classic JSX from `tsconfig.json`. Its
-[Oxc setting](https://vite.dev/config/shared-options.html#oxc) disables the
+its temporary output. `test/jsx.test.tsx` imports the same TSX specimen and
+renders the element and component examples. Vitest uses classic JSX from
+`tsconfig.json`. Its [Oxc setting](https://vite.dev/config/shared-options.html#oxc) disables the
 extra debug props that the development transform would otherwise generate.
 
 ## What TypeScript Checks
@@ -102,3 +104,24 @@ are no nested children. It treats `undefined` host attributes as omitted.
 `pnpm typecheck` checks the sample and the `@ts-expect-error` cases in
 `learning/jsx/type-checks.tsx`. The host attribute types cover only a subset of
 what the handwritten renderer accepts.
+
+## Comparing JSX With Handwritten `h`
+
+Both expressions describe a `Greeting` with the same props, children, and key.
+The comparison test uses `toEqual` for their contents and `not.toBe` for their
+object references. Each call creates its own VNode.
+
+```tsx
+const fromJsx = <Greeting name="Ada" key="user-a" />;
+const fromH = h(Greeting, { name: "Ada" }, [], "user-a");
+```
+
+The rendering test starts with the handwritten `h` call and then renders
+`<Greeting name="Grace" key="user-a" />` into the same container. The key and
+component function still match. The component is evaluated with the new name,
+and reconciliation updates the existing Text node. Both the `p` element and
+the Text node keep their object identities.
+
+This puts the boundary at the VNode. JSX transformation determines how the
+VNode is created. `render` works with the resulting VNodes and decides how to
+update the DOM.

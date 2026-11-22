@@ -26,8 +26,8 @@ Core milestone complete.
 The synchronous browser renderer can mount an explicit Virtual Node tree,
 reconcile a second tree positionally, update basic DOM properties and events,
 and demonstrate through tests which real DOM nodes were reused. Sections 0
-through 4 establish this foundation. Components, state, keys, and JSX build
-on it. JSX is the last planned section of the main learning sequence.
+through 4 establish this foundation. Sections 5 through 8 build on it with
+components, state, keys, and JSX, completing the main learning sequence.
 
 ## Roadmap
 
@@ -398,8 +398,8 @@ Questions to answer:
 - [x] Inspect the JavaScript produced from a small JSX expression.
 - [x] Configure JSX to call the local Virtual Node factory.
 - [x] Define the minimal JSX TypeScript types.
-- [ ] Compare handwritten `h` calls with JSX output.
-- [ ] Keep JSX transformation separate from renderer behavior.
+- [x] Compare handwritten `h` calls with JSX output.
+- [x] Keep JSX transformation separate from renderer behavior.
 
 Current learning unit:
 
@@ -416,6 +416,9 @@ Current learning unit:
   covering invalid inputs.
 - Component callers can omit children or pass raw `VNodeChild` values. The
   renderer supplies the normalized `VNode[]` when evaluating the component.
+- Tests compare equivalent JSX and handwritten `h` VNodes, then switch from
+  `h` to JSX during a prop update and verify DOM node reuse. VNodes are the
+  shared input to the renderer.
 
 Questions to answer:
 
