@@ -1,17 +1,19 @@
 # Inspecting JSX Transformation
 
-JSX describes function calls using markup-like syntax. This lesson inspects
-the generated JavaScript before connecting those calls to the local renderer.
+JSX describes function calls using markup-like syntax. This lesson follows the
+generated calls through the factory adapter to `h`.
 
-Run the compilation specimen with:
+Run the inspection command to see the generated calls.
 
 ```sh
 pnpm jsx:inspect
 ```
 
-`learning/jsx/expression.tsx` contains a host element and a component expression:
+`learning/jsx/expression.tsx` contains a host element and a component expression.
 
 ```tsx
+import { jsx } from "../../src";
+
 const Greeting = ({ name }: { name: string }) => <p>{name}</p>;
 const name = "Ada";
 
@@ -20,17 +22,17 @@ export const component = <Greeting name="Ada" key="user-a" />;
 ```
 
 The script invokes the installed TypeScript compiler with `jsx: react` and
-`jsxFactory: h`. In this configuration, `react` selects the classic JSX emit
-format; it does not install React or import it into the output. The compiler
-emits calls to the configured factory identifier, `h`:
+`jsxFactory: jsx`. Here `react` selects the classic JSX emit format, and `jsx`
+names the function used in the generated calls.
 
 ```js
-const Greeting = ({ name }) => h("p", null, name);
+import { jsx } from "../../src";
+const Greeting = ({ name }) => jsx("p", null, name);
 const name = "Ada";
-export const element = h("p", { className: "message" },
+export const element = jsx("p", { className: "message" },
     "Hello, ",
     name);
-export const component = h(Greeting, { name: "Ada", key: "user-a" });
+export const component = jsx(Greeting, { name: "Ada", key: "user-a" });
 ```
 
 ## What The Compiler Does
@@ -47,16 +49,17 @@ export const component = h(Greeting, { name: "Ada", key: "user-a" });
 The compiler does not call `render`, create DOM nodes, evaluate components on
 its own, or compare trees. The factory and renderer define those behaviors.
 
-## Why These Calls Do Not Yet Fit `h`
+## How `jsx` Adapts The Call To `h`
 
-The current handwritten API expects:
+These are the equivalent calls to the handwritten factory.
 
 ```ts
+h("p", {}, [name]);
 h("p", { className: "message" }, ["Hello, ", name]);
 h(Greeting, { name: "Ada" }, [], "user-a");
 ```
 
-There are three differences to bridge:
+The adapter converts three parts of the call.
 
 | Classic JSX output | Current `h` input |
 | --- | --- |
@@ -64,21 +67,18 @@ There are three differences to bridge:
 | Children passed as separate arguments, or no child argument | One children array |
 | `key` inside the props object | A separate fourth argument |
 
-Merely setting the factory name to `h` does not solve these differences. In the
-element example, `name` would even occupy the argument that `h` treats as the
-key. The next lesson will introduce a small adapter that accepts the emitted
-arguments, normalizes them, and delegates VNode creation to `h`.
-
-That adapter will also extract `key` from JSX props so it remains renderer
-metadata rather than an HTML attribute or an ordinary component prop.
+`jsx` uses a rest parameter to collect the child arguments into an array.
+It destructures `key` out of the props object and passes it separately to `h`,
+which stores it on the VNode. `h` also continues to normalize children and
+build the VNode supplied to `render`.
 
 ## Inspection Scope
 
-The specimen is outside the main TypeScript project's `include` paths. The
-inspection command uses `--noCheck` to observe emission before a factory binding
-and JSX type declarations exist. It prints the source and generated JavaScript,
-then removes its temporary output directory. It does not execute the output.
+The inspection command prints the source and generated JavaScript and cleans up
+its temporary output. `test/jsx.test.ts` imports the same TSX specimen and
+renders both exports. Vitest uses classic JSX from `tsconfig.json`. Its
+[Oxc setting](https://vite.dev/config/shared-options.html#oxc) disables the
+extra debug props that the development transform would otherwise generate.
 
-The application's strict type checking remains enabled. JSX runtime support
-and JSX type checking are separate upcoming steps; other JSX emit modes and
-fragments are outside this first inspection lesson.
+The specimen uses `@ts-nocheck` until the JSX type declarations are introduced
+in the next lesson.

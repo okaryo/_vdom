@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);
 const compiler = join(dirname(require.resolve("typescript/package.json")), "bin/tsc");
 const source = fileURLToPath(new URL("../learning/jsx/expression.tsx", import.meta.url));
+const projectDirectory = fileURLToPath(new URL("../", import.meta.url));
 const outputDirectory = mkdtempSync(join(tmpdir(), "vdom-jsx-"));
 
 try {
@@ -16,9 +17,10 @@ try {
     "--ignoreConfig",
     "--noCheck",
     "--jsx", "react",
-    "--jsxFactory", "h",
+    "--jsxFactory", "jsx",
     "--target", "ES2022",
     "--module", "ESNext",
+    "--rootDir", projectDirectory,
     "--outDir", outputDirectory,
     source,
   ], { stdio: "inherit" });
@@ -26,7 +28,7 @@ try {
   console.log("JSX source:\n");
   console.log(readFileSync(source, "utf8"));
   console.log("Generated JavaScript (inspection only):\n");
-  console.log(readFileSync(join(outputDirectory, "expression.js"), "utf8"));
+  console.log(readFileSync(join(outputDirectory, "learning/jsx/expression.js"), "utf8"));
 } finally {
   rmSync(outputDirectory, { recursive: true, force: true });
 }

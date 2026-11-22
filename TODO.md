@@ -396,25 +396,23 @@ Questions to answer:
 ### 8. JSX
 
 - [x] Inspect the JavaScript produced from a small JSX expression.
-- [ ] Configure JSX to call the local Virtual Node factory.
+- [x] Configure JSX to call the local Virtual Node factory.
 - [ ] Define the minimal JSX TypeScript types.
 - [ ] Compare handwritten `h` calls with JSX output.
 - [ ] Keep JSX transformation separate from renderer behavior.
 
 Current learning unit:
 
-- `pnpm jsx:inspect` compiles a small standalone TSX specimen with the installed
+- `pnpm jsx:inspect` compiles a small TSX specimen with the installed
   TypeScript compiler and prints its source and generated JavaScript.
 - The classic JSX emit format turns host tags into strings, component tags
   into variables, attributes into props, and children into successive factory
   arguments. The compiler removes TypeScript annotations.
-- The generated calls do not yet fit the local `h`: absent props are `null`,
-  children are variadic, and `key` is part of the JSX props object.
-- The inspection command skips semantic checking for this isolated specimen,
-  does not execute generated output, and cleans up its temporary emitted files.
-  Main-project JSX configuration and strict type checking are unchanged.
-- The next unit will add a factory adapter that bridges the JSX call shape to
-  `h` while retaining its explicit children-array and separate-key boundaries.
+- The classic JSX factory is `jsx`. It normalizes absent props to an object,
+  collects children in an array, extracts `key`, and delegates to `h`.
+- A test renders the TSX specimen and checks that the component's key stays on
+  its VNode. The specimen temporarily uses `@ts-nocheck` until the JSX type
+  declarations are introduced in the next unit.
 
 Questions to answer:
 

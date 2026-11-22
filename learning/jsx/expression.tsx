@@ -1,4 +1,6 @@
-// Compilation specimen: inspect the emitted calls before connecting a factory.
+// @ts-nocheck: JSX type declarations are introduced in the next lesson.
+import { jsx } from "../../src";
+
 const Greeting = ({ name }: { name: string }) => <p>{name}</p>;
 
 const name = "Ada";
