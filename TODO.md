@@ -26,8 +26,8 @@ Core milestone complete.
 The synchronous browser renderer can mount an explicit Virtual Node tree,
 reconcile a second tree positionally, update basic DOM properties and events,
 and demonstrate through tests which real DOM nodes were reused. Sections 0
-through 4 establish this completed foundation; components and state now build
-on it as later learning stages.
+through 4 establish this foundation. Components, state, keys, and JSX build
+on it. JSX is the last planned section of the main learning sequence.
 
 ## Roadmap
 
@@ -420,35 +420,42 @@ Questions to answer:
 
 - What does JSX provide beyond syntax?
 - Which JSX behaviors belong to the compiler and which belong to the runtime?
-- How do fragments affect the renderer model?
 
-### 9. Robustness And Diagnostics
+## Completed Robustness Checks
+
+- [x] Test nested updates and event replacement. See
+  [renderer tests](test/render.test.ts).
+- [x] Document known renderer limitations. See
+  [DOM boundaries and limitations](docs/dom-boundaries-and-limitations.md).
+
+## Optional Follow-ups
+
+Start a follow-up when there is a specific learning question to explore.
+
+### Robustness And Diagnostics
 
 - [ ] Add useful errors for invalid Virtual Nodes and containers.
-- [ ] Cover empty trees and transitions between empty, text, and element nodes.
-- [ ] Test nested updates and event replacement.
 - [ ] Add mutation observation examples where helpful.
-- [ ] Document known renderer limitations.
 - [ ] Add a focused behavior comparison with React or Preact.
 
 Questions to answer:
 
 - Which renderer errors can be detected before touching the DOM?
 - What information makes a reconciliation failure understandable?
+- Which DOM changes remain if reconciliation throws partway through a tree?
 - Which browser DOM edge cases should remain explicit non-goals?
 
-### 10. Optional Advanced Topics
+### Advanced Topics
 
 - [ ] Explore batched state updates.
 - [ ] Explore effect or lifecycle semantics.
-- [ ] Explore fragments and portals.
+- [ ] Explore Fragments and empty roots together, including transitions between
+  empty, text, and element output and what it means for a VNode to produce zero
+  or multiple DOM nodes.
+- [ ] Explore portals.
 - [ ] Explore a hook call-order model.
 - [ ] Explore cooperative or interruptible rendering.
 - [ ] Compare the simple recursive renderer with a Fiber-like work structure.
 - [ ] Explore server rendering and hydration.
 - [ ] Benchmark selected operations without treating benchmark speed as the
   primary learning goal.
-
-These topics are optional. They should be started only when a specific learning
-question makes them useful and should not prevent the core milestone from being
-marked complete.
