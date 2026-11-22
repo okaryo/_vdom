@@ -278,3 +278,7 @@ added, replaced, or removed without accumulating listeners on reused elements.
   and removing keyed children using a snapshot of old DOM nodes.
 - `docs/keyed-component-state.md`: a comparison of state and DOM identity
   across reordering with stable keys, no keys, and array-index keys.
+- `learning/jsx/expression.tsx` and `pnpm jsx:inspect`: an isolated JSX
+  compilation specimen and a command to inspect its generated JavaScript.
+- `docs/jsx-transformation.md`: notes on classic JSX output and the adapter
+  needed to connect its argument shape to the local `h` function.

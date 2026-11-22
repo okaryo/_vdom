@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "jsx:inspect": "node scripts/inspect-jsx.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
