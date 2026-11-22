@@ -397,7 +397,7 @@ Questions to answer:
 
 - [x] Inspect the JavaScript produced from a small JSX expression.
 - [x] Configure JSX to call the local Virtual Node factory.
-- [ ] Define the minimal JSX TypeScript types.
+- [x] Define the minimal JSX TypeScript types.
 - [ ] Compare handwritten `h` calls with JSX output.
 - [ ] Keep JSX transformation separate from renderer behavior.
 
@@ -410,9 +410,12 @@ Current learning unit:
   arguments. The compiler removes TypeScript annotations.
 - The classic JSX factory is `jsx`. It normalizes absent props to an object,
   collects children in an array, extracts `key`, and delegates to `h`.
-- A test renders the TSX specimen and checks that the component's key stays on
-  its VNode. The specimen temporarily uses `@ts-nocheck` until the JSX type
-  declarations are introduced in the next unit.
+- `jsx.JSX` gives JSX expressions the `VNode` type and checks HTML tags,
+  a small set of host attributes, component props, children, and keys. The TSX
+  specimen participates in strict type checking, with compile-only examples
+  covering invalid inputs.
+- Component callers can omit children or pass raw `VNodeChild` values. The
+  renderer supplies the normalized `VNode[]` when evaluating the component.
 
 Questions to answer:
 

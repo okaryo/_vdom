@@ -12,9 +12,9 @@ pnpm jsx:inspect
 `learning/jsx/expression.tsx` contains a host element and a component expression.
 
 ```tsx
-import { jsx } from "../../src";
+import { jsx, type FunctionComponent } from "../../src";
 
-const Greeting = ({ name }: { name: string }) => <p>{name}</p>;
+const Greeting: FunctionComponent<{ name: string }> = ({ name }) => <p>{name}</p>;
 const name = "Ada";
 
 export const element = <p className="message">Hello, {name}</p>;
@@ -80,5 +80,25 @@ renders both exports. Vitest uses classic JSX from `tsconfig.json`. Its
 [Oxc setting](https://vite.dev/config/shared-options.html#oxc) disables the
 extra debug props that the development transform would otherwise generate.
 
-The specimen uses `@ts-nocheck` until the JSX type declarations are introduced
-in the next lesson.
+## What TypeScript Checks
+
+With `jsxFactory: jsx`, TypeScript looks for types under `jsx.JSX`. The
+declarations in `src/jsx.ts` describe the JSX call site.
+
+- `JSX.Element` is `VNode`, so a JSX expression can be passed to `render`.
+- `JSX.IntrinsicElements` takes tag names from `HTMLElementTagNameMap` and
+  gives them a small shared set of supported attributes. It adds `checked`
+  as a boolean on `input`.
+- `JSX.IntrinsicAttributes` declares the optional `key`. Component-specific
+  props come from the component function's parameter type.
+- `JSX.ElementChildrenAttribute` names `children` as the field used to check
+  nested JSX. `JSX.LibraryManagedAttributes` lets callers pass optional
+  `VNodeChild` values to components that receive a normalized `VNode[]`.
+
+The adapter uses an explicit `children` attribute as a fallback when there
+are no nested children. It treats `undefined` host attributes as omitted.
+`h` normalizes either form of children before the component receives them.
+
+`pnpm typecheck` checks the sample and the `@ts-expect-error` cases in
+`learning/jsx/type-checks.tsx`. The host attribute types cover only a subset of
+what the handwritten renderer accepts.

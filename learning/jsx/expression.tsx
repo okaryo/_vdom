@@ -1,7 +1,6 @@
-// @ts-nocheck: JSX type declarations are introduced in the next lesson.
-import { jsx } from "../../src";
+import { jsx, type FunctionComponent } from "../../src";
 
-const Greeting = ({ name }: { name: string }) => <p>{name}</p>;
+const Greeting: FunctionComponent<{ name: string }> = ({ name }) => <p>{name}</p>;
 
 const name = "Ada";
 
